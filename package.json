@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "format": "prettier --write"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "next": "14.0.3",
@@ -33,6 +33,6 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*": ""
+    "*": "prettier --write"
   }
 }
