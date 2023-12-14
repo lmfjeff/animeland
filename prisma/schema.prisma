@@ -2,13 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-1.0.x"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -26,7 +30,7 @@ model Account {
   id_token          String?  @db.Text
   session_state     String?
   created_at        DateTime @default(now()) @db.Timestamptz()
-  updated_at        DateTime @updatedAt @db.Timestamptz()
+  updated_at        DateTime @default(now()) @updatedAt @db.Timestamptz()
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -40,18 +44,23 @@ model Session {
   userId       String   @map("user_id")
   expires      DateTime @db.Timestamptz()
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at   DateTime @default(now()) @db.Timestamptz()
+  updated_at   DateTime @default(now()) @updatedAt @db.Timestamptz()
 
   @@map("sessions")
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified") @db.Timestamptz()
+  email         String?      @unique
+  emailVerified DateTime?    @map("email_verified") @db.Timestamptz()
   image         String?
+  created_at    DateTime     @default(now()) @db.Timestamptz()
+  updated_at    DateTime     @default(now()) @updatedAt @db.Timestamptz()
   accounts      Account[]
   sessions      Session[]
+  followlist    FollowList[]
 
   @@map("users")
 }
@@ -60,7 +69,78 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime @db.Timestamptz()
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
 
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+
+model Media {
+  id             Int          @id @default(autoincrement())
+  /// [JsonType]
+  titles         Json
+  /// [JsonType]
+  id_external    Json?
+  /// [JsonType]
+  score_external Json?
+  /// [JsonType]
+  summary        Json?
+  /// [JsonType]
+  day_of_week    Json?
+  /// [JsonType]
+  time           Json?
+  /// [JsonType]
+  start_date     Json?
+  /// [JsonType]
+  end_date       Json?
+  /// [JsonType]
+  images         Json[]       @default([])
+  /// [JsonType]
+  links          Json[]       @default([])
+  slug           String?
+  synonyms       String[]     @default([])
+  year           Int?
+  season         Int?
+  country        String?
+  source         String?
+  type           String?
+  format         String?
+  status         String?
+  episodes       Int?
+  nsfw           Boolean      @default(false)
+  studios        String[]     @default([])
+  genres         Genre[]
+  is_hiden       Boolean      @default(false)
+  created_at     DateTime     @default(now()) @db.Timestamptz()
+  updated_at     DateTime     @default(now()) @updatedAt @db.Timestamptz()
+  followlist     FollowList[]
+
+  @@map("media")
+}
+
+model Genre {
+  id         Int      @id @default(autoincrement())
+  key        String   @unique
+  /// [JsonType]
+  name       Json
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+  media      Media[]
+
+  @@map("genres")
+}
+
+model FollowList {
+  media        Media    @relation(fields: [media_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  media_id     Int
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id      String
+  watch_status String   @default("watching")
+  score        Float?
+  created_at   DateTime @default(now()) @db.Timestamptz()
+  updated_at   DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  @@id([media_id, user_id])
+  @@map("followlist")
 }
