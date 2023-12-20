@@ -97,7 +97,9 @@ model Media {
   /// [JsonType]
   images         Json[]       @default([])
   /// [JsonType]
-  links          Json[]       @default([])
+  external_links Json[]       @default([])
+  /// [JsonType]
+  trailers       Json[]       @default([])
   slug           String?
   synonyms       String[]     @default([])
   year           Int?
