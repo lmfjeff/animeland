@@ -116,3 +116,25 @@ export function malUpdateAnimeDto(rawmedia, olddata) {
   }
   return updateinput
 }
+
+function jikanObjToMedia(rawMedia) {
+  const { mal_id, score, broadcast } = rawMedia
+  const time = broadcast?.time
+  const day = broadcast?.day ? `${broadcast?.day}` : undefined
+  const updateinput: updateMediaInputType = {
+    day_of_week: day ? { jp: day.toLowerCase().slice(0, -1) } : undefined,
+    time: broadcast?.time && broadcast?.timezone === "Asia/Tokyo" ? { jp: time } : undefined,
+    score_external: score ? { mal: score } : undefined,
+  }
+  return pickBy(identity, updateinput)
+}
+
+export function jikanUpdateAnimeDto(rawmedia, olddata) {
+  const newmedia = jikanObjToMedia(rawmedia) as Partial<Media>
+  const old = pick(Object.keys(newmedia), olddata)
+  const updateinput = mergeDeepRight(old, newmedia)
+  if (equals(updateinput, old)) {
+    return {}
+  }
+  return updateinput
+}

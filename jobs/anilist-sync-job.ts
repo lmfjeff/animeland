@@ -1,9 +1,11 @@
+import fs from "fs/promises"
 import { anilistCreateAnimeDto, anilistUpdateAnimeDto } from "@/jobs/dto"
 import { anilistGetAnimeByPageQuery } from "@/jobs/graphql"
 import prisma from "@/lib/prisma"
 
 async function anilistSyncJob(stopAt?: number) {
   let page = 1
+  const wholeList: any[] = []
   const globalStart = Date.now()
   while (true) {
     try {
@@ -22,6 +24,7 @@ async function anilistSyncJob(stopAt?: number) {
 
       // write to db
       const rawMediaList = data.data.Page.media
+      wholeList.push(...rawMediaList)
       for (const rawMedia of rawMediaList) {
         const found = await prisma.media.findMany({
           where: {
@@ -52,6 +55,7 @@ async function anilistSyncJob(stopAt?: number) {
       // check if last page
       const hasNextPage = data.data.Page.pageInfo.hasNextPage
       if (!hasNextPage) {
+        await fs.writeFile("./anilist.json", JSON.stringify(wholeList, null, 2))
         console.log(`end of fetch: page ${page}, total time: ${(Date.now() - globalStart) / 1000}`)
         return
       }
