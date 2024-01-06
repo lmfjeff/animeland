@@ -1,11 +1,10 @@
-import fs from "fs/promises"
-import { anilistCreateAnimeDto, anilistUpdateAnimeDto } from "@/jobs/dto"
+import { anilistObjToMediaDTO, newMediaToUpdateInput } from "@/jobs/dto"
 import { anilistGetAnimeByPageQuery } from "@/jobs/graphql"
 import prisma from "@/lib/prisma"
+import { createMediaInputType } from "@/types/prisma"
 
-async function anilistSyncJob(stopAt?: number) {
+export async function anilistSyncJob(stopAt?: number) {
   let page = 1
-  const wholeList: any[] = []
   const globalStart = Date.now()
   while (true) {
     try {
@@ -22,43 +21,6 @@ async function anilistSyncJob(stopAt?: number) {
       })
       const data = await resp.json()
 
-      // write to db
-      const rawMediaList = data.data.Page.media
-      wholeList.push(...rawMediaList)
-      for (const rawMedia of rawMediaList) {
-        const found = await prisma.media.findMany({
-          where: {
-            id_external: {
-              path: ["anilist"],
-              equals: rawMedia.id,
-            },
-          },
-        })
-        if (found.length > 0) {
-          const oldMedia = found?.[0]
-          const updateInput = anilistUpdateAnimeDto(rawMedia, oldMedia)
-          await prisma.media.update({
-            where: {
-              id: oldMedia.id,
-            },
-            data: updateInput,
-          })
-        } else {
-          const createInput = anilistCreateAnimeDto(rawMedia)
-          await prisma.media.create({
-            data: createInput,
-          })
-        }
-      }
-      console.log(`page: ${page}, elapsed: ${(Date.now() - start) / 1000} sec`)
-
-      // check if last page
-      const hasNextPage = data.data.Page.pageInfo.hasNextPage
-      if (!hasNextPage) {
-        await fs.writeFile("./anilist.json", JSON.stringify(wholeList, null, 2))
-        console.log(`end of fetch: page ${page}, total time: ${(Date.now() - globalStart) / 1000}`)
-        return
-      }
       // sleep to avoid rate limit
       if (resp.status === 429) {
         const retryAfter = resp.headers.get("Retry-After")
@@ -69,6 +31,47 @@ async function anilistSyncJob(stopAt?: number) {
           console.log("rate limited: no retryAfter?")
           return
         }
+      }
+
+      // write to db
+      const rawMediaList = data.data.Page.media
+      for (const rawMedia of rawMediaList) {
+        const newMedia = anilistObjToMediaDTO(rawMedia)
+        const found = await prisma.media.findMany({
+          where: {
+            id_external: {
+              path: ["anilist"],
+              equals: rawMedia.id,
+            },
+          },
+        })
+        if (found.length > 0) {
+          const oldMedia = found?.[0]
+          const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
+          if (!updateInput) continue
+          await prisma.media.update({
+            where: {
+              id: oldMedia.id,
+            },
+            data: updateInput,
+          })
+        } else {
+          await prisma.media.create({
+            data: newMedia as createMediaInputType,
+          })
+        }
+      }
+      const elapsed = Date.now() - start
+      console.log(`page: ${page}, elapsed: ${elapsed / 1000} sec`)
+      if (elapsed < 700) {
+        await new Promise(resolve => setTimeout(resolve, 700 - elapsed + 100))
+      }
+
+      // check if last page
+      const hasNextPage = data.data.Page.pageInfo.hasNextPage
+      if (!hasNextPage) {
+        console.log(`end of fetch: page ${page}, total time: ${(Date.now() - globalStart) / 1000}`)
+        return
       }
       // manual last page
       if (stopAt && page === stopAt) {
@@ -83,4 +86,4 @@ async function anilistSyncJob(stopAt?: number) {
   }
 }
 
-anilistSyncJob()
+// anilistSyncJob()

@@ -8,7 +8,7 @@ import { Prisma } from "@prisma/client"
 export default async function Animes({ params, searchParams }) {
   let { year, season } = searchParams
   year = year ? parseInt(year) : new Date().getFullYear()
-  season = season ? parseInt(season) : Math.ceil((new Date().getMonth() + 1) / 4) + 1
+  season = season ? parseInt(season) : Math.floor(new Date().getMonth() / 3) + 1
   const session = await auth()
   async function test() {
     return await prisma.user.findFirst()
@@ -29,7 +29,7 @@ export default async function Animes({ params, searchParams }) {
 
   return (
     <div className="h-screen flex divide-x">
-      <div className="flex flex-col gap-2 items-start min-w-[200px]">
+      <div className="flex flex-col gap-2 items-start w-full max-w-[200px] overflow-hidden">
         <Link href="/">wellcome</Link>
         {/* <a href="/api/auth/signin">sign in</a>
         <a href="/api/auth/signout">sign out</a> */}
@@ -37,7 +37,7 @@ export default async function Animes({ params, searchParams }) {
         <LogoutButton />
         <div className="border p-1">date: {new Date().toUTCString()}</div>
         <div className="border p-1">env: {process.env.NEXT_PUBLIC_DOTENV}</div>
-        <pre className="border p-1">first user: {firstUser?.email}</pre>
+        <div className="border p-1">first user: {firstUser?.email}</div>
         <pre className="border p-1">session: {JSON.stringify(session, null, 2)}</pre>
       </div>
       <div>

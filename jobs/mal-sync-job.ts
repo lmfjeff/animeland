@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma"
-import { malUpdateAnimeDto } from "./dto"
+import { malObjToMediaDTO, newMediaToUpdateInput } from "./dto"
 import { isEmpty } from "ramda"
 import { MAL_CLIENT_ID } from "@/constants/env"
 import { seasonList } from "@/constants/media"
@@ -41,6 +41,7 @@ async function malSyncJob() {
       //   write data to db
       const rawMediaList = data.data
       for (const rawMedia of rawMediaList) {
+        const newMedia = malObjToMediaDTO(rawMedia.node)
         const found = await prisma.media.findMany({
           where: {
             id_external: {
@@ -51,8 +52,8 @@ async function malSyncJob() {
         })
         if (found.length > 0) {
           const oldMedia = found?.[0]
-          const updateInput = malUpdateAnimeDto(rawMedia, oldMedia)
-          if (isEmpty(updateInput)) continue
+          const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
+          if (!updateInput) continue
           await prisma.media.update({
             where: {
               id: oldMedia.id,

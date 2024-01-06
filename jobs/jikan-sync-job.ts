@@ -1,12 +1,8 @@
-import fs from "fs/promises"
 import prisma from "@/lib/prisma"
-import { jikanUpdateAnimeDto, malUpdateAnimeDto } from "./dto"
-import { isEmpty } from "ramda"
-import { seasonList } from "@/constants/media"
+import { jikanObjToMediaDTO, newMediaToUpdateInput } from "./dto"
 
-async function jikanSyncJob() {
-  let page = 1
-  const wholeList: any[] = []
+export async function jikanSyncJob(startAt?: number) {
+  let page = startAt || 1
   const globalStart = Date.now()
 
   while (true) {
@@ -24,8 +20,8 @@ async function jikanSyncJob() {
 
       //   write data to db
       const rawMediaList = data.data
-      wholeList.push(...rawMediaList)
       for (const rawMedia of rawMediaList) {
+        const newMedia = jikanObjToMediaDTO(rawMedia)
         const found = await prisma.media.findMany({
           where: {
             id_external: {
@@ -36,7 +32,8 @@ async function jikanSyncJob() {
         })
         if (found.length > 0) {
           const oldMedia = found?.[0]
-          const updateInput = jikanUpdateAnimeDto(rawMedia, oldMedia)
+          const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
+          if (!updateInput) continue
           await prisma.media.update({
             where: {
               id: oldMedia.id,
@@ -52,12 +49,17 @@ async function jikanSyncJob() {
       }
 
       const hasNextPage = data.pagination.has_next_page
+      const globalPassed = (Date.now() - globalStart) / 1000
       if (!hasNextPage) {
-        await fs.writeFile("./jikan.json", JSON.stringify(wholeList, null, 2))
-        console.log(`end of fetch: page ${page}, total time: ${(Date.now() - globalStart) / 1000}`)
+        console.log(`end of fetch: page ${page}, total time: ${globalPassed}`)
         return
       }
       page++
+
+      if (globalPassed > 850) {
+        console.log(`almost timeout, continue in next job: page ${page}, total time: ${globalPassed}`)
+        return page
+      }
     } catch (e) {
       console.log("🚀 ~ file: jikan-sync-job.ts:57 ~ jikanSyncJob ~ e:", e)
       return
@@ -65,4 +67,4 @@ async function jikanSyncJob() {
   }
 }
 
-jikanSyncJob()
+// jikanSyncJob()

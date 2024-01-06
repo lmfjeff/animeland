@@ -1,11 +1,19 @@
-import { Media } from "@prisma/client"
+// import { Media } from "@prisma/client"
 import { equals, identity, mergeDeepRight, pick, pickBy } from "ramda"
 import slugify from "slugify"
 import { anilistDateToString } from "@/jobs/utils"
 import { createMediaInputType, updateMediaInputType } from "@/types/prisma"
 import { seasonIntMap } from "@/constants/media"
 
-function anilistObjToMedia(rawmedia) {
+export function newMediaToUpdateInput(newMedia, oldMedia) {
+  // todo deal with genres for newMedia
+  const diffKeys = Object.keys(newMedia).filter(key => !equals(newMedia[key], oldMedia[key]))
+  if (diffKeys.length <= 1) return null
+  const merged = mergeDeepRight(pick(diffKeys, oldMedia), pick(diffKeys, newMedia))
+  return merged
+}
+
+export function anilistObjToMediaDTO(rawmedia) {
   const {
     title,
     countryOfOrigin,
@@ -30,15 +38,12 @@ function anilistObjToMedia(rawmedia) {
     genres,
     trailer,
   } = rawmedia
-  let native = {}
-  if (countryOfOrigin) {
-    if (countryOfOrigin === "JP") {
-      native["en_jp"] = title.romaji
-      native["ja"] = title.native
-    }
-  }
-  const createinput: createMediaInputType = {
-    titles: { en: title.english, ...native },
+
+  const toBeSlug = countryOfOrigin === "JP" ? title.romaji ?? title.english : title.english
+  const jaTitle = countryOfOrigin === "JP" ? { en_jp: title.romaji, ja: title.native } : {}
+
+  const input: createMediaInputType | updateMediaInputType = {
+    titles: { en: title.english, ...jaTitle },
     country: countryOfOrigin,
     end_date: { jp: anilistDateToString(endDate) },
     episodes,
@@ -58,7 +63,8 @@ function anilistObjToMedia(rawmedia) {
     year: seasonYear,
     external_links: externalLinks.map(v => ({ url: v.url, site: v.site })),
     trailers: trailer ? [{ id: trailer.id, site: trailer.site }] : undefined,
-    slug: native["en_jp"] ? native["en_jp"] : title.english ? slugify(title.english) : undefined,
+    slug: toBeSlug ? slugify(toBeSlug, { lower: true }) : undefined,
+    // todo disconnect genres if no longer exist?
     genres: {
       connectOrCreate: genres.map(g => ({
         where: { key: g },
@@ -66,26 +72,11 @@ function anilistObjToMedia(rawmedia) {
       })),
     },
   }
-  return pickBy(identity, createinput)
+  const cleanedInput = pickBy(identity, input)
+  return cleanedInput
 }
 
-export function anilistCreateAnimeDto(rawmedia) {
-  return anilistObjToMedia(rawmedia) as createMediaInputType
-}
-
-// TODO WIP handle json[] merge instead of replace
-export function anilistUpdateAnimeDto(rawmedia, olddata) {
-  return {}
-  const newmedia = anilistObjToMedia(rawmedia) as Partial<Media>
-  // const updateinput: updateMediaInputType = {}
-  // if (newmedia.country !== olddata.country) {
-  //   updateinput.country = newmedia.country
-  // }
-  const updateinput = mergeDeepRight(pick(Object.keys(newmedia), olddata), newmedia)
-  return updateinput
-}
-
-function malObjToMedia(rawmedia) {
+export function malObjToMediaDTO(rawmedia) {
   const {
     alternative_titles,
     start_date,
@@ -97,44 +88,26 @@ function malObjToMedia(rawmedia) {
     start_season,
     broadcast,
     studio,
-  } = rawmedia.node
+  } = rawmedia
 
-  const updateinput: updateMediaInputType = {
+  const input: createMediaInputType | updateMediaInputType = {
     day_of_week: broadcast?.day_of_the_week ? { jp: broadcast?.day_of_the_week } : undefined,
     time: broadcast?.start_time ? { jp: broadcast?.start_time } : undefined,
     score_external: mean ? { mal: mean } : undefined,
   }
-  return pickBy(identity, updateinput)
+  const cleanedInput = pickBy(identity, input)
+  return cleanedInput
 }
 
-export function malUpdateAnimeDto(rawmedia, olddata) {
-  const newmedia = malObjToMedia(rawmedia) as Partial<Media>
-  const old = pick(Object.keys(newmedia), olddata)
-  const updateinput = mergeDeepRight(old, newmedia)
-  if (equals(updateinput, old)) {
-    return {}
-  }
-  return updateinput
-}
-
-function jikanObjToMedia(rawMedia) {
+export function jikanObjToMediaDTO(rawMedia) {
   const { mal_id, score, broadcast } = rawMedia
   const time = broadcast?.time
   const day = broadcast?.day ? `${broadcast?.day}` : undefined
-  const updateinput: updateMediaInputType = {
+  const input: createMediaInputType | updateMediaInputType = {
     day_of_week: day ? { jp: day.toLowerCase().slice(0, -1) } : undefined,
     time: broadcast?.time && broadcast?.timezone === "Asia/Tokyo" ? { jp: time } : undefined,
     score_external: score ? { mal: score } : undefined,
   }
-  return pickBy(identity, updateinput)
-}
-
-export function jikanUpdateAnimeDto(rawmedia, olddata) {
-  const newmedia = jikanObjToMedia(rawmedia) as Partial<Media>
-  const old = pick(Object.keys(newmedia), olddata)
-  const updateinput = mergeDeepRight(old, newmedia)
-  if (equals(updateinput, old)) {
-    return {}
-  }
-  return updateinput
+  const cleanedInput = pickBy(identity, input)
+  return cleanedInput
 }

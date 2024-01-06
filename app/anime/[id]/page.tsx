@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma"
+import { notFound } from "next/navigation"
 
 export default async function Anime({ params, searchParams }) {
   const { id } = params
@@ -10,6 +11,9 @@ export default async function Anime({ params, searchParams }) {
     })
   }
   const anime = await fetchAnime()
+  if (!anime) {
+    notFound()
+  }
   return (
     <div className="flex flex-col p-2 gap-1">
       <div>{anime?.titles.zh}</div>
@@ -51,7 +55,7 @@ export default async function Anime({ params, searchParams }) {
             </a>
           ))}
       </div>
-      <div>{anime?.summary?.en}</div>
+      <div className="border p-2 [&_br]:hidden" dangerouslySetInnerHTML={{ __html: anime?.summary?.en || "" }}></div>
     </div>
   )
 }
