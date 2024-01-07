@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/tw"
 import React from "react"
 
 export default function Button(props: React.ComponentPropsWithRef<"button">) {
