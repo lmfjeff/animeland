@@ -1,8 +1,4 @@
-import LoginButton from "@/components/LoginButton"
-import LogoutButton from "@/components/LogoutButton"
-import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
-import Link from "next/link"
 import { Prisma } from "@prisma/client"
 import AnimeFilter from "@/components/AnimeFilter"
 import { groupBy } from "ramda"
@@ -43,12 +39,8 @@ export default async function Animes({ params, searchParams }) {
   return (
     <div>
       <div className="">date: {new Date().toUTCString()}</div>
-      {/* <div>{animes.length}</div> */}
       <AnimeFilter year={year} season={season} />
-
       <AnimeList animes={animes} />
-      {/* this is a grid with each item with fixed width of 200px */}
-      {/* grid-cols-[auto_fill,minmax(100px,100px)] */}
     </div>
   )
 }
