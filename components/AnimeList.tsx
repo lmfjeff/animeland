@@ -1,19 +1,9 @@
-import { weekdayOption } from "@/constants/media"
-import dayjs from "dayjs"
 import Link from "next/link"
 
-// todo change to server component
 export default function AnimeList({ animes }) {
-  // todo any
-  const sortedAnimes = Object.entries(animes).sort((a, b) => {
-    const today = dayjs().day()
-    const weekdayOrder = [...weekdayOption.slice(today + 1), ...weekdayOption.slice(0, today)]
-    return weekdayOrder.indexOf(a[0]) - weekdayOrder.indexOf(b[0])
-  }) as any
-
   return (
     <>
-      {sortedAnimes.map(([day, animes]) => (
+      {animes.map(({ day, animes }) => (
         <div key={day}>
           <div className="text-xl">{day}</div>
           <div className="grid gap-1 grid-cols-[repeat(auto-fill,minmax(100px,1fr))]">

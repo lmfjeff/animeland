@@ -4,6 +4,8 @@ import AnimeFilter from "@/components/AnimeFilter"
 import { groupBy } from "ramda"
 import AnimeList from "@/components/AnimeList"
 import { transformAnimeDay } from "@/utils/anime-transform"
+import dayjs from "dayjs"
+import { weekdayOption } from "@/constants/media"
 
 export default async function Animes({ params, searchParams }) {
   let { year, season, sort } = searchParams
@@ -31,7 +33,17 @@ export default async function Animes({ params, searchParams }) {
     animes = animes.map(transformAnimeDay).sort((a, b) => {
       return a.time?.jp.localeCompare(b.time?.jp)
     })
-    animes = groupBy(anime => anime?.day_of_week?.jp, animes) as any
+    if (!sort || sort === "day") {
+      const today = dayjs().day()
+      const weekdayOrder = [...weekdayOption.slice(today), ...weekdayOption.slice(0, today)]
+      const animeGroup: any[] = weekdayOrder.map(day => ({ day, animes: [] }))
+      animes.forEach(anime => {
+        const day = anime?.day_of_week?.jp
+        const index = weekdayOrder.indexOf(day)
+        animeGroup[index].animes.push(anime)
+      })
+      return animeGroup
+    }
     return animes
   }
   const animes = await fetchAnimes()
