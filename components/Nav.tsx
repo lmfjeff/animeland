@@ -29,12 +29,17 @@ export default function Nav({ session }) {
   return (
     <div className={cn("sticky top-0 bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>
       <Link href="/">wellcome</Link>
-      <img
-        src={session?.user?.image || "user.svg"}
-        className="size-6"
-        ref={refs.setReference}
-        {...getReferenceProps()}
-      />
+      <div className="flex gap-2">
+        <Link href="/follow">
+          <img src="heart.svg" className="size-6" />
+        </Link>
+        <img
+          src={session?.user?.image || "user.svg"}
+          className="size-6"
+          ref={refs.setReference}
+          {...getReferenceProps()}
+        />
+      </div>
       <>
         {isOpen && (
           <FloatingPortal>
