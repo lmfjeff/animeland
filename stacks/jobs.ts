@@ -50,12 +50,12 @@ export function Jobs({ stack, app }: StackContext) {
   })
 
   const anilistSyncCron = new Cron(stack, "anilistCron", {
-    schedule: "cron(0 0 1 * ? *)",
+    schedule: "cron(0 0 * * ? *)",
     job: anilistSyncFunction,
   })
 
   const jikanSyncCron = new Cron(stack, "jikanCron", {
-    schedule: "cron(0 1 1 * ? *)",
+    schedule: "cron(0 1 * * ? *)",
     job: jikanSyncFunction,
   })
 

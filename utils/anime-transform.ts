@@ -6,6 +6,7 @@ import timezone from "dayjs/plugin/timezone"
 dayjs.extend(customParseFormat)
 dayjs.extend(utc)
 dayjs.extend(timezone)
+dayjs.tz.setDefault("Asia/Hong_Kong")
 
 // todo transform start end date
 export function transformAnimeDay(anime) {
@@ -15,7 +16,7 @@ export function transformAnimeDay(anime) {
 
   const dayNum = weekdayOption.indexOf(jpDay)
   const dayjsJP = dayjs.tz(jpTime, "HH:mm", "Japan")?.day(dayNum)
-  const dayjsHK = dayjsJP?.tz("Asia/Hong_Kong")
+  const dayjsHK = dayjsJP?.tz()
   if (!dayjsHK) return anime
 
   if (dayjsHK.hour() <= 5) {
@@ -27,4 +28,24 @@ export function transformAnimeDay(anime) {
   }
 
   return anime
+}
+
+export function sortByTime(a, b) {
+  return a.time?.jp?.localeCompare(b.time?.jp)
+}
+
+export function createAnimeGroupByDay(animes) {
+  const today = gethkNow().day()
+  const weekdayOrder = [...weekdayOption.slice(today), ...weekdayOption.slice(0, today)]
+  const animeGroup: any[] = weekdayOrder.map(day => ({ day, animes: [] }))
+  animes.forEach(anime => {
+    const day = anime?.day_of_week?.jp
+    const index = weekdayOrder.indexOf(day)
+    animeGroup[index].animes.push(anime)
+  })
+  return animeGroup
+}
+
+export function gethkNow() {
+  return dayjs.tz()
 }

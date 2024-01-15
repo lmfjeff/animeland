@@ -1,22 +1,17 @@
 import prisma from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
 import AnimeFilter from "@/components/AnimeFilter"
-import { groupBy } from "ramda"
 import AnimeList from "@/components/AnimeList"
-import { transformAnimeDay } from "@/utils/anime-transform"
-import dayjs from "dayjs"
-import { weekdayOption } from "@/constants/media"
+import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
 
 export default async function Animes({ params, searchParams }) {
   let { year, season, sort } = searchParams
-  year = year ? parseInt(year) : new Date().getFullYear()
-  season = season ? parseInt(season) : Math.floor(new Date().getMonth() / 3) + 1
+  const nowDayjs = gethkNow()
+  year = year ? parseInt(year) : nowDayjs.year()
+  season = season ? parseInt(season) : Math.floor(nowDayjs.month() / 3) + 1
 
-  async function test() {
-    return await prisma.user.findFirst()
-  }
-  const firstUser = await test()
   async function fetchAnimes() {
+    // todo also include current airing past animes
     let animes = await prisma.media.findMany({
       where: {
         season: season,
@@ -26,23 +21,20 @@ export default async function Animes({ params, searchParams }) {
         },
       },
     })
-    // transform time/dayofweek (jp to hk) & 30hr
-    // sort time
-    // group by day of week
-    // todo any
-    animes = animes.map(transformAnimeDay).sort((a, b) => {
-      return a.time?.jp.localeCompare(b.time?.jp)
-    })
+    // transform time/dayofweek (jp to hk) & 30hr, sort time, group by day of week
+    animes = animes.map(transformAnimeDay).sort(sortByTime)
     if (!sort || sort === "day") {
-      const today = dayjs().day()
-      const weekdayOrder = [...weekdayOption.slice(today), ...weekdayOption.slice(0, today)]
-      const animeGroup: any[] = weekdayOrder.map(day => ({ day, animes: [] }))
-      animes.forEach(anime => {
-        const day = anime?.day_of_week?.jp
-        const index = weekdayOrder.indexOf(day)
-        animeGroup[index].animes.push(anime)
+      return createAnimeGroupByDay(animes)
+    }
+    if (sort === "mal-score") {
+      animes = animes.sort((a, b) => {
+        return (b?.score_external?.mal || -1) - (a?.score_external?.mal || -1)
       })
-      return animeGroup
+    }
+    if (sort === "anilist-score") {
+      animes = animes.sort((a, b) => {
+        return (b?.score_external?.anilist || -1) - (a?.score_external?.anilist || -1)
+      })
     }
     return animes
   }
@@ -50,9 +42,9 @@ export default async function Animes({ params, searchParams }) {
 
   return (
     <div>
-      <div className="">date: {new Date().toUTCString()}</div>
-      <AnimeFilter year={year} season={season} />
-      <AnimeList animes={animes} />
+      <div className="">date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
+      <AnimeFilter year={year} season={season} sort={sort} />
+      <AnimeList animes={animes} sort={sort} />
     </div>
   )
 }
