@@ -42,7 +42,7 @@ export default async function Animes({ params, searchParams }) {
 
   return (
     <div>
-      <div className="">date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
+      <div>date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
       <AnimeFilter year={year} season={season} sort={sort} />
       <AnimeList animes={animes} sort={sort} />
     </div>

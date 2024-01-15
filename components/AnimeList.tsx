@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+const NOT_SHOW_IMG = true
+
 export default function AnimeList({ animes, sort }) {
   if (animes?.[0]?.animes) {
     return (
@@ -30,17 +32,16 @@ function AnimeSubList({ animes, sort }) {
     <>
       <div className="grid gap-1 grid-cols-[repeat(auto-fill,minmax(100px,1fr))]">
         {animes.map(anime => (
-          <Link href={`/anime/${anime.id}`} key={anime.id} className="border flex flex-col">
-            <img src={"anime?.images?.[0]?.lg"} className="aspect-square border-b object-cover" />
-            <div className="text-sm line-clamp-1">{anime.titles?.ja}</div>
-            {!sort ||
-              (sort === "day" && (
-                <div className="text-sm line-clamp-1">
-                  {anime?.day_of_week?.jp?.slice(0, 3)} {anime.time?.jp}
-                </div>
-              ))}
-            {sort === "mal-score" && <div className="text-sm line-clamp-1">{anime?.score_external?.mal}</div>}
-            {sort === "anilist-score" && <div className="text-sm line-clamp-1">{anime?.score_external?.anilist}</div>}
+          <Link href={`/anime/${anime.id}`} key={anime.id} className="border border-gray-300 flex flex-col">
+            <img src={NOT_SHOW_IMG ? "" : anime?.images?.[0]?.lg} className="aspect-square border-b object-cover" />
+            <div className="bg-blue-100">
+              <div className="text-sm line-clamp-1">{anime.titles?.ja}</div>
+              <div className="text-sm line-clamp-1 whitespace-pre-wrap">
+                {!sort || (sort === "day" && `${anime?.day_of_week?.jp?.slice(0, 3)} ${anime.time?.jp}`)}
+                {sort === "mal-score" && `${anime?.score_external?.mal || "\n"}`}
+                {sort === "anilist-score" && `${anime?.score_external?.anilist || "\n"}`}
+              </div>
+            </div>
           </Link>
         ))}
       </div>
