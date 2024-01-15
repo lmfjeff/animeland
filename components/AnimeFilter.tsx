@@ -36,6 +36,7 @@ export default function AnimeFilter({ year, season, sort }) {
         <div>sort: </div>
         {["none", "day", "mal-score", "anilist-score"].map(sort => (
           <Link
+            key={sort}
             href={{
               pathname: "/anime",
               query: {

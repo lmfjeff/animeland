@@ -15,7 +15,7 @@ export default function Nav({ session }) {
       <LogoutButton /> */}
       <img
         src={session?.user?.image || "user.svg"}
-        className="size-8 border rounded-full"
+        className="size-6"
         onClick={() => {
           if (session) {
             signOut()
