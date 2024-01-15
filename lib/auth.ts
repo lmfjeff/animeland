@@ -2,6 +2,7 @@ import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 
 import type { NextAuthOptions } from "next-auth"
 import { getServerSession } from "next-auth"
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google"
+import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "./prisma"
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "@/constants/env"
@@ -12,7 +13,26 @@ export const nextAuthOptions = {
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
     }),
+    CredentialsProvider({
+      credentials: {
+        username: { label: "username", type: "text" },
+        password: { label: "password", type: "password" },
+      },
+      // todo add bcrypt compare hash
+      async authorize(credentials, req) {
+        const user = await prisma.user.findUnique({
+          where: {
+            username: credentials?.username,
+          },
+        })
+        if (!user) throw Error("no this user")
+        return user
+      },
+    }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async signIn({ account, profile }) {
@@ -20,6 +40,10 @@ export const nextAuthOptions = {
         return (profile as GoogleProfile)?.email_verified
       }
       return true
+    },
+    async session({ session, token, user }) {
+      session.user.id = token?.sub || user?.id
+      return session
     },
   },
   pages: {
