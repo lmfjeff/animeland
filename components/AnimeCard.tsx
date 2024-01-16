@@ -4,6 +4,7 @@ import Button from "./Button"
 import { useState } from "react"
 import { useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
 import { follow } from "@/actions/follow"
+import { cn } from "@/utils/tw"
 
 const NOT_SHOW_IMG = 1
 
@@ -58,7 +59,7 @@ export default function AnimeCard({ anime, sort }) {
           </div>
           <img
             src="plus.svg"
-            className="size-4 bg-gray-400 rounded-full mr-0.5"
+            className={cn("size-4 rounded-full mr-0.5 bg-gray-400", { "bg-green-400": !!anime.watch_status })}
             ref={refs.setReference}
             {...getReferenceProps()}
           />

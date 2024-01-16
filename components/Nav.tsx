@@ -69,21 +69,30 @@ export default function Nav({ session }) {
                       <div className="flex gap-2">
                         <button
                           className="w-full border border-gray-500 p-1"
-                          onClick={() => createUser(username, password)}
+                          onClick={() => {
+                            signIn("credentials", { username, password })
+                            setIsOpen(false)
+                          }}
                         >
-                          register
+                          login
                         </button>
                         <button
                           className="w-full border border-gray-500 p-1"
-                          onClick={() => signIn("credentials", { username, password, redirect: false })}
+                          onClick={() => createUser(username, password)}
                         >
-                          login
+                          register
                         </button>
                       </div>
                     </>
                   )}
                   {session && (
-                    <button className="border border-gray-500 p-1" onClick={() => signOut()}>
+                    <button
+                      className="border border-gray-500 p-1"
+                      onClick={() => {
+                        signOut()
+                        setIsOpen(false)
+                      }}
+                    >
                       log out
                     </button>
                   )}

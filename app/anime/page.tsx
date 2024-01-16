@@ -21,10 +21,28 @@ export default async function Animes({ params, searchParams }) {
         },
       },
     })
+    const follows = await prisma.followList.findMany({
+      where: {
+        media: {
+          season: season,
+          year: year,
+          day_of_week: {
+            not: Prisma.DbNull,
+          },
+        },
+      },
+    })
+    animes.forEach(anime => {
+      const found = follows.find(follow => follow.media_id === anime.id)
+      if (found) {
+        anime["watch_status"] = found.watch_status
+        anime["score"] = found.score
+      }
+    })
     // transform time/dayofweek (jp to hk) & 30hr, sort time, group by day of week
     animes = animes.map(transformAnimeDay).sort(sortByTime)
     if (!sort || sort === "day") {
-      return createAnimeGroupByDay(animes)
+      animes = createAnimeGroupByDay(animes)
     }
     if (sort === "mal-score") {
       animes = animes.sort((a, b) => {

@@ -32,9 +32,9 @@ export default async function Follow({ searchParams }) {
   }
   const [follows, count] = await fetchFollow()
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <FollowImport />
-      <div className="flex justify-between">
+      <div className="flex gap-8">
         <Link
           href={{
             pathname: "/follow",
@@ -68,6 +68,6 @@ export default async function Follow({ searchParams }) {
           </div>
         ))}
       </div>
-    </>
+    </div>
   )
 }
