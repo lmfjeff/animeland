@@ -1,9 +1,10 @@
 "use server"
 import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { revalidatePath } from "next/cache"
 
 // todo add change follow status
-export async function follow(media_id, status?: any) {
+export async function follow(media_id, score?: any, watch_status?: any) {
   const session = await auth()
   const user_id = session?.user?.id
   if (!user_id) return
@@ -17,7 +18,28 @@ export async function follow(media_id, status?: any) {
     create: {
       media_id,
       user_id,
+      score,
+      watch_status,
     },
-    update: {},
+    update: {
+      score,
+      watch_status,
+    },
   })
+  revalidatePath("/anime")
+}
+
+export async function unfollow(media_id) {
+  const session = await auth()
+  const user_id = session?.user?.id
+  if (!user_id) return
+  await prisma.followList.delete({
+    where: {
+      media_id_user_id: {
+        media_id,
+        user_id,
+      },
+    },
+  })
+  revalidatePath("/anime")
 }

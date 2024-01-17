@@ -3,7 +3,7 @@ import Link from "next/link"
 import Button from "./Button"
 import { useState } from "react"
 import { useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
-import { follow } from "@/actions/follow"
+import { follow, unfollow } from "@/actions/follow"
 import { cn } from "@/utils/tw"
 
 const NOT_SHOW_IMG = 1
@@ -17,6 +17,7 @@ export default function AnimeCard({ anime, sort }) {
   const click = useClick(context)
   const dismiss = useDismiss(context)
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
+  const isFollowed = !!anime.watch_status
 
   return (
     <div className="flex flex-col">
@@ -38,10 +39,14 @@ export default function AnimeCard({ anime, sort }) {
           >
             <Button
               onClick={() => {
-                follow(anime.id)
+                if (isFollowed) {
+                  unfollow(anime.id)
+                } else {
+                  follow(anime.id)
+                }
               }}
             >
-              follow
+              {isFollowed ? "unfollow" : "follow"}
             </Button>
             <Button>rate</Button>
             <Button>status</Button>
@@ -59,7 +64,7 @@ export default function AnimeCard({ anime, sort }) {
           </div>
           <img
             src="plus.svg"
-            className={cn("size-4 rounded-full mr-0.5 bg-gray-400", { "bg-green-400": !!anime.watch_status })}
+            className={cn("size-4 rounded-full mr-0.5 bg-gray-400", { "bg-green-400": isFollowed })}
             ref={refs.setReference}
             {...getReferenceProps()}
           />
