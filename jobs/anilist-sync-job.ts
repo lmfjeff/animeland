@@ -27,6 +27,7 @@ export async function anilistSyncJob(stopAt?: number) {
         if (retryAfter) {
           console.log(`rate limited: retry in ${retryAfter} sec`)
           await new Promise(r => setTimeout(r, (Number(retryAfter) + 3) * 1000))
+          continue
         } else {
           console.log("rate limited: no retryAfter?")
           return
