@@ -4,7 +4,7 @@ import { exportFollow, importFollow } from "@/actions/import"
 export default function FollowImport() {
   return (
     <div>
-      <form className="flex items-center mb-1">
+      <form className="flex items-center mb-1 justify-between">
         <input name="import" type="file" />
         <button className="border" formAction={importFollow}>
           import

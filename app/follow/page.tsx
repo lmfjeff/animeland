@@ -34,7 +34,7 @@ export default async function Follow({ searchParams }) {
   return (
     <div className="flex flex-col gap-2">
       <FollowImport />
-      <div className="flex gap-8">
+      <div className="flex gap-2">
         <Link
           href={{
             pathname: "/follow",
@@ -42,12 +42,12 @@ export default async function Follow({ searchParams }) {
               page: page - 1,
             },
           }}
-          className={cn({ invisible: page <= 1 })}
+          className={cn("border", { "bg-gray-300": page <= 1 })}
         >
           prev
         </Link>
         <div>
-          total: {Math.ceil(count / 100)}/{page}
+          total: {page}/{Math.ceil(count / 100)}
         </div>
         <Link
           href={{
@@ -56,14 +56,14 @@ export default async function Follow({ searchParams }) {
               page: page + 1,
             },
           }}
-          className={cn({ invisible: page >= Math.ceil(count / 100) })}
+          className={cn("border", { "bg-gray-300": page >= Math.ceil(count / 100) })}
         >
           next
         </Link>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col divide-y">
         {follows.map(follow => (
-          <div key={follow.media_id}>
+          <div key={follow.media_id} className="line-clamp-1">
             <div>{follow.media.titles?.ja}</div>
           </div>
         ))}
