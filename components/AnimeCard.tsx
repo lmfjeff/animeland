@@ -6,7 +6,7 @@ import { useClick, useDismiss, useFloating, useInteractions } from "@floating-ui
 import { follow, unfollow } from "@/actions/follow"
 import { cn } from "@/utils/tw"
 
-const NOT_SHOW_IMG = 1
+const NOT_SHOW_IMG = 0
 
 export default function AnimeCard({ anime, sort }) {
   const [isOpen, setIsOpen] = useState(false)

@@ -30,6 +30,9 @@ export default function Nav({ session }) {
     <div className={cn("sticky top-0 bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>
       <Link href="/">wellcome</Link>
       <div className="flex gap-2">
+        <Link href="/anime">
+          <img src="list.svg" className="size-6" />
+        </Link>
         <Link href="/follow">
           <img src="heart.svg" className="size-6" />
         </Link>

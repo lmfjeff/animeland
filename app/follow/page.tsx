@@ -47,7 +47,7 @@ export default async function Follow({ searchParams }) {
           prev
         </Link>
         <div>
-          total: {page}/{Math.ceil(count / 100)}
+          page: {page}/{Math.ceil(count / 100)}
         </div>
         <Link
           href={{
@@ -60,6 +60,7 @@ export default async function Follow({ searchParams }) {
         >
           next
         </Link>
+        <div>(total: {count})</div>
       </div>
       <div className="flex flex-col divide-y">
         {follows.map(follow => (

@@ -2,6 +2,7 @@
 import { auth } from "@/lib/auth"
 import Papa from "papaparse"
 import prisma from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 // todo improve
 export async function importFollow(data) {
@@ -65,6 +66,7 @@ export async function importFollow(data) {
     skipDuplicates: true,
   })
   console.log(`imported: ${resp?.count}`)
+  revalidatePath("/follow")
 }
 
 export async function exportFollow() {
