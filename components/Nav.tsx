@@ -27,18 +27,17 @@ export default function Nav({ session }) {
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
 
   return (
-    <div className={cn("sticky top-0 bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>
-      <Link href="/">wellcome</Link>
-      <div className="flex gap-2">
-        <Link href="/anime">
-          <img src="list.svg" className="size-6" />
-        </Link>
+    <div className={cn("sticky top-0 z-sticky bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>
+      <Link href="/anime">
+        <img src="home.svg" className="size-8" />
+      </Link>
+      <div className="flex gap-4">
         <Link href="/follow">
-          <img src="heart.svg" className="size-6" />
+          <img src="heart.svg" className="size-8" />
         </Link>
         <img
           src={session?.user?.image || "user.svg"}
-          className="size-6"
+          className="size-8"
           ref={refs.setReference}
           {...getReferenceProps()}
         />
@@ -72,8 +71,8 @@ export default function Nav({ session }) {
                       <div className="flex gap-2">
                         <button
                           className="w-full border border-gray-500 p-1"
-                          onClick={() => {
-                            signIn("credentials", { username, password })
+                          onClick={async () => {
+                            await signIn("credentials", { username, password })
                             setIsOpen(false)
                           }}
                         >
@@ -81,7 +80,11 @@ export default function Nav({ session }) {
                         </button>
                         <button
                           className="w-full border border-gray-500 p-1"
-                          onClick={() => createUser(username, password)}
+                          onClick={async () => {
+                            await createUser(username, password)
+                            await signIn("credentials", { username, password })
+                            setIsOpen(false)
+                          }}
                         >
                           register
                         </button>
@@ -89,15 +92,19 @@ export default function Nav({ session }) {
                     </>
                   )}
                   {session && (
-                    <button
-                      className="border border-gray-500 p-1"
-                      onClick={() => {
-                        signOut()
-                        setIsOpen(false)
-                      }}
-                    >
-                      log out
-                    </button>
+                    <>
+                      <div>email: {session?.user?.email}</div>
+                      <div>username: {session?.user?.username}</div>
+                      <button
+                        className="border border-gray-500 p-1"
+                        onClick={async () => {
+                          await signOut()
+                          setIsOpen(false)
+                        }}
+                      >
+                        log out
+                      </button>
+                    </>
                   )}
                 </div>
               </FloatingFocusManager>
