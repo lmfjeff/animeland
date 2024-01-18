@@ -3,8 +3,8 @@ import { anilistGetAnimeByPageQuery } from "@/jobs/graphql"
 import prisma from "@/lib/prisma"
 import { createMediaInputType } from "@/types/prisma"
 
-export async function anilistSyncJob(stopAt?: number) {
-  let page = 1
+export async function anilistSyncJob(startAt?: number) {
+  let page = startAt || 1
   const globalStart = Date.now()
   while (true) {
     try {
@@ -70,16 +70,17 @@ export async function anilistSyncJob(stopAt?: number) {
 
       // check if last page
       const hasNextPage = data.data.Page.pageInfo.hasNextPage
+      const globalPassed = (Date.now() - globalStart) / 1000
       if (!hasNextPage) {
-        console.log(`end of fetch: page ${page}, total time: ${(Date.now() - globalStart) / 1000}`)
-        return
-      }
-      // manual last page
-      if (stopAt && page === stopAt) {
-        console.log(`manual end at page ${stopAt}, total time: ${(Date.now() - globalStart) / 1000}`)
+        console.log(`end of fetch: page ${page}, total time: ${globalPassed}`)
         return
       }
       page++
+
+      if (globalPassed > 850) {
+        console.log(`almost timeout, continue in next job: page ${page}, total time: ${globalPassed}`)
+        return page
+      }
     } catch (e) {
       console.log("🚀 ~ file: test.ts:27 ~ test ~ e:", e)
       return

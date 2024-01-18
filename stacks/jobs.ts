@@ -60,6 +60,15 @@ export function Jobs({ stack, app }: StackContext) {
   })
 
   bus.addRules(stack, {
+    anilistRule: {
+      pattern: {
+        source: ["anilist-sync-lambda"],
+        detailType: ["self-trigger"],
+      },
+      targets: {
+        jikanTarget: anilistSyncFunction,
+      },
+    },
     jikanRule: {
       pattern: {
         source: ["jikan-sync-lambda"],
