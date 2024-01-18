@@ -5,10 +5,13 @@ import AnimeList from "@/components/AnimeList"
 import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
 
 export default async function Animes({ params, searchParams }) {
-  let { year, season, sort } = searchParams
   const nowDayjs = gethkNow()
-  year = year ? parseInt(year) : nowDayjs.year()
-  season = season ? parseInt(season) : Math.floor(nowDayjs.month() / 3) + 1
+  const q = {
+    ...searchParams,
+    year: searchParams.year ? parseInt(searchParams.year) : nowDayjs.year(),
+    season: searchParams.season ? parseInt(searchParams.season) : Math.floor(nowDayjs.month() / 3) + 1,
+  }
+  const { year, season, sort } = q
 
   async function fetchAnimes() {
     // todo also include current airing past animes
@@ -61,8 +64,8 @@ export default async function Animes({ params, searchParams }) {
   return (
     <div>
       <div>date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
-      <AnimeFilter year={year} season={season} sort={sort} />
-      <AnimeList animes={animes} sort={sort} />
+      <AnimeFilter q={q} />
+      <AnimeList animes={animes} q={q} />
     </div>
   )
 }

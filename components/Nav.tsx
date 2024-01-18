@@ -13,6 +13,7 @@ import {
 } from "@floating-ui/react"
 import { useState } from "react"
 import { createUser } from "@/actions/user"
+import DebugButton from "./DebugButton"
 
 export default function Nav({ session }) {
   const [username, setUsername] = useState("")
@@ -32,6 +33,7 @@ export default function Nav({ session }) {
         <img src="home.svg" className="size-8" />
       </Link>
       <div className="flex gap-4">
+        <DebugButton />
         <Link href="/follow">
           <img src="heart.svg" className="size-8" />
         </Link>

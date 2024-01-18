@@ -6,9 +6,8 @@ import { useClick, useDismiss, useFloating, useInteractions } from "@floating-ui
 import { follow, unfollow } from "@/actions/follow"
 import { cn } from "@/utils/tw"
 
-const NOT_SHOW_IMG = 0
-
-export default function AnimeCard({ anime, sort }) {
+export default function AnimeCard({ anime, q }) {
+  const { sort } = q
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -24,8 +23,10 @@ export default function AnimeCard({ anime, sort }) {
       <div className="relative">
         <div ref={refs.setPositionReference} />
         <Link href={`/anime/${anime.id}`}>
-          {NOT_SHOW_IMG ? (
-            <div className="w-full aspect-square border border-gray-400"></div>
+          {q.debug ? (
+            <div className="w-full aspect-square border border-gray-400 flex justify-center items-center">
+              <img src="image-slash.svg" alt="no image" className="w-1/3" />
+            </div>
           ) : (
             <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
           )}

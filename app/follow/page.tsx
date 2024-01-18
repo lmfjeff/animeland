@@ -39,6 +39,7 @@ export default async function Follow({ searchParams }) {
           href={{
             pathname: "/follow",
             query: {
+              ...searchParams,
               page: page - 1,
             },
           }}
@@ -53,6 +54,7 @@ export default async function Follow({ searchParams }) {
           href={{
             pathname: "/follow",
             query: {
+              ...searchParams,
               page: page + 1,
             },
           }}

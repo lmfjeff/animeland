@@ -1,13 +1,17 @@
 import Link from "next/link"
+import HotkeySeason from "./HotkeySeason"
 
-export default function AnimeFilter({ year, season, sort }) {
+export default function AnimeFilter({ q }) {
+  const { year, season } = q
   return (
     <>
+      <HotkeySeason q={q} />
       <div className="flex items-center gap-2 p-1">
         <Link
           href={{
             pathname: "/anime",
             query: {
+              ...q,
               year: season === 1 ? year - 1 : year,
               season: season === 1 ? 4 : season - 1,
             },
@@ -23,6 +27,7 @@ export default function AnimeFilter({ year, season, sort }) {
           href={{
             pathname: "/anime",
             query: {
+              ...q,
               year: season === 4 ? year + 1 : year,
               season: season === 4 ? 1 : season + 1,
             },
@@ -40,8 +45,7 @@ export default function AnimeFilter({ year, season, sort }) {
             href={{
               pathname: "/anime",
               query: {
-                year,
-                season,
+                ...q,
                 sort: sort,
               },
             }}

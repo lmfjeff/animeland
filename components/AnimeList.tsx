@@ -1,19 +1,19 @@
 import AnimeCard from "./AnimeCard"
 
-export default function AnimeList({ animes, sort }) {
+export default function AnimeList({ animes, q }) {
   if (animes?.[0]?.animes) {
     return (
       <>
         {animes.map(({ day, animes }) => (
           <div key={day}>
             <div className="text-xl">{day}</div>
-            <AnimeSubList animes={animes} sort={sort} />
+            <AnimeSubList animes={animes} q={q} />
           </div>
         ))}
       </>
     )
   } else {
-    return <AnimeSubList animes={animes} sort={sort} />
+    return <AnimeSubList animes={animes} q={q} />
   }
 
   //             {anime.external_links
@@ -25,12 +25,12 @@ export default function AnimeList({ animes, sort }) {
   //               ))}
 }
 
-function AnimeSubList({ animes, sort }) {
+function AnimeSubList({ animes, q }) {
   return (
     <>
       <div className="grid gap-1 grid-cols-[repeat(auto-fill,minmax(100px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
         {animes.map(anime => (
-          <AnimeCard key={anime.id} anime={anime} sort={sort} />
+          <AnimeCard key={anime.id} anime={anime} q={q} />
         ))}
       </div>
     </>
