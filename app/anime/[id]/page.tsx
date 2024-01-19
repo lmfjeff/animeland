@@ -22,13 +22,15 @@ export async function AnimeDetail({ id }) {
     <div className="flex flex-col p-2 gap-1">
       <div>{anime?.titles.zh}</div>
       <div>{anime?.titles.ja}</div>
-      <div className="flex gap-1 border divide-x">
-        {anime?.synonyms.map(synonym => (
-          <div key={synonym} className="px-2">
-            {synonym}
-          </div>
-        ))}
-      </div>
+      {anime?.synonyms?.length > 0 && (
+        <div className="flex flex-col border max-h-[100px] overflow-auto">
+          {anime?.synonyms.map(synonym => (
+            <div key={synonym} className="px-2">
+              {synonym}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="flex gap-1">
         {anime?.id_external
           ? Object.entries(anime?.id_external).map(([key, value]) => (
