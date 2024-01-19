@@ -1,8 +1,12 @@
 import prisma from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
-export default async function Anime({ params, searchParams }) {
+export default async function Anime({ params }) {
   const { id } = params
+  return <AnimeDetail id={id} />
+}
+
+export async function AnimeDetail({ id }) {
   async function fetchAnime() {
     return await prisma.media.findUnique({
       where: {

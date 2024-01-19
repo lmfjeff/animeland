@@ -22,7 +22,7 @@ export default function AnimeCard({ anime, q }) {
     <div className="flex flex-col">
       <div className="relative">
         <div ref={refs.setPositionReference} />
-        <Link href={`/anime/${anime.id}`}>
+        <Link href={`/anime/${anime.id}`} scroll={false}>
           {q.debug ? (
             <div className="w-full aspect-square border border-gray-400 flex justify-center items-center">
               <img src="/image-slash.svg" alt="no image" className="w-1/3" />
