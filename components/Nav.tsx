@@ -30,15 +30,15 @@ export default function Nav({ session }) {
   return (
     <div className={cn("sticky top-0 z-sticky bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>
       <Link href="/anime">
-        <img src="home.svg" className="size-8" />
+        <img src="/home.svg" className="size-8" />
       </Link>
       <div className="flex gap-4">
         <DebugButton />
         <Link href="/follow">
-          <img src="heart.svg" className="size-8" />
+          <img src="/heart.svg" className="size-8" />
         </Link>
         <img
-          src={session?.user?.image || "user.svg"}
+          src={session?.user?.image || "/user.svg"}
           className="size-8"
           ref={refs.setReference}
           {...getReferenceProps()}

@@ -25,7 +25,7 @@ export default function AnimeCard({ anime, q }) {
         <Link href={`/anime/${anime.id}`}>
           {q.debug ? (
             <div className="w-full aspect-square border border-gray-400 flex justify-center items-center">
-              <img src="image-slash.svg" alt="no image" className="w-1/3" />
+              <img src="/image-slash.svg" alt="no image" className="w-1/3" />
             </div>
           ) : (
             <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
@@ -64,7 +64,7 @@ export default function AnimeCard({ anime, q }) {
             {sort === "anilist-score" && `${anime?.score_external?.anilist || "\n"}`}
           </div>
           <img
-            src="plus.svg"
+            src="/plus.svg"
             className={cn("size-4 rounded-full mr-0.5 bg-gray-400", { "bg-green-400": isFollowed })}
             ref={refs.setReference}
             {...getReferenceProps()}

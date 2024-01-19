@@ -10,7 +10,7 @@ export default function DebugButton() {
   const router = useRouter()
   return (
     <img
-      src="debug.svg"
+      src="/debug.svg"
       className="size-8 cursor-pointer"
       onClick={() => {
         router.push(`${pathname}?${newSearch.toString()}`)
