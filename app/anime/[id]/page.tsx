@@ -19,11 +19,11 @@ export async function AnimeDetail({ id }) {
     notFound()
   }
   return (
-    <div className="flex flex-col p-2 gap-1">
+    <div className="flex flex-col p-2 gap-1 grow overflow-auto">
       <div>{anime?.titles.zh}</div>
       <div>{anime?.titles.ja}</div>
       {anime?.synonyms?.length > 0 && (
-        <div className="flex flex-col border max-h-[100px] overflow-auto">
+        <div className="flex flex-col border max-h-[50px] shrink-0 overflow-auto">
           {anime?.synonyms.map(synonym => (
             <div key={synonym} className="px-2">
               {synonym}

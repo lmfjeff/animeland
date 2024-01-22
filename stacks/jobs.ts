@@ -39,7 +39,7 @@ export function Jobs({ stack, app }: StackContext) {
   const bus = new EventBus(stack, "jobEventBus")
 
   const anilistSyncFunction = new Function(stack, "anilist-sync", {
-    handler: "jobs/anilist-sync-job.anilistSyncJob",
+    handler: "jobs/anilist-sync-lambda.handler",
     timeout: 900,
   })
 
