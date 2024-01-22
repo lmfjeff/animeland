@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Nav from "@/components/Nav"
 import { auth } from "@/lib/auth"
+import { cn } from "@/utils/tw"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -15,9 +16,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await auth()
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, "min-h-screen flex flex-col")}>
         <Nav session={session} />
-        <div className="p-2">{children}</div>
+        <div className="grow flex flex-col">{children}</div>
       </body>
     </html>
   )

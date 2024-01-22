@@ -10,7 +10,6 @@ export default async function AnimeModal({ params }) {
         <div className="z-modal h-1/2 w-full bg-white flex flex-col">
           <AnimeDetail id={id} />
           {/* todo rate, status button */}
-          <div className="bg-blue-500">test</div>
         </div>
       </div>
     </div>

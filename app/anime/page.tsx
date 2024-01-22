@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client"
 import AnimeFilter from "@/components/AnimeFilter"
 import AnimeList from "@/components/AnimeList"
 import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
+import { auth } from "@/lib/auth"
 
 export default async function Animes({ params, searchParams }) {
   const nowDayjs = gethkNow()
@@ -13,6 +14,8 @@ export default async function Animes({ params, searchParams }) {
   }
   const { year, season, sort } = q
 
+  // todo get session from rootlayout
+  const session = await auth()
   async function fetchAnimes() {
     // todo also include current airing past animes
     let animes = await prisma.media.findMany({
@@ -33,6 +36,7 @@ export default async function Animes({ params, searchParams }) {
             not: Prisma.DbNull,
           },
         },
+        user_id: session?.user?.id,
       },
     })
     animes.forEach(anime => {
@@ -62,7 +66,7 @@ export default async function Animes({ params, searchParams }) {
   const animes = await fetchAnimes()
 
   return (
-    <div>
+    <div className="p-2">
       <div>date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
       <AnimeFilter q={q} />
       <AnimeList animes={animes} q={q} />

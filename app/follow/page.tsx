@@ -32,7 +32,7 @@ export default async function Follow({ searchParams }) {
   }
   const [follows, count] = await fetchFollow()
   return (
-    <div className="flex flex-col gap-2">
+    <div className="p-2 flex flex-col gap-2 grow">
       <FollowImport />
       <div className="flex gap-2">
         <Link
