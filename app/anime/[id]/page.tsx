@@ -1,3 +1,4 @@
+import ExternalLink from "@/components/ExternalLink"
 import prisma from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
@@ -34,11 +35,9 @@ export async function AnimeDetail({ id }) {
       <div className="flex gap-1">
         {anime?.id_external
           ? Object.entries(anime?.id_external).map(([key, value]) => (
-              <a
+              <ExternalLink
                 key={key}
                 className="px-2 border"
-                rel="noreferrer"
-                target="_blank"
                 href={
                   key === "anilist"
                     ? "https://anilist.co/anime/" + value
@@ -48,7 +47,7 @@ export async function AnimeDetail({ id }) {
                 }
               >
                 {key}
-              </a>
+              </ExternalLink>
             ))
           : null}
       </div>
@@ -56,9 +55,9 @@ export async function AnimeDetail({ id }) {
         {anime?.external_links
           .filter(link => link.site === "Wikipedia")
           .map(link => (
-            <a key={link.url} href={link.url} className="border px-1" rel="noreferrer" target="_blank">
+            <ExternalLink key={link.url} href={link.url} className="border px-1">
               {link.url.replace("https://", "").slice(0, 2)} wiki
-            </a>
+            </ExternalLink>
           ))}
       </div>
       <div className="border p-2 [&_br]:hidden" dangerouslySetInnerHTML={{ __html: anime?.summary?.en || "" }}></div>
