@@ -1,4 +1,5 @@
 import ExternalLink from "@/components/ExternalLink"
+import RateButton from "@/components/RateButton"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import { notFound } from "next/navigation"
@@ -77,9 +78,9 @@ export async function AnimeDetail({ id }) {
         </div>
         <div className="border p-2 [&_br]:hidden" dangerouslySetInnerHTML={{ __html: anime?.summary?.en || "" }}></div>
       </div>
-      <div className="sticky bottom-0 grid grid-cols-3 border-t border-black divide-x divide-black">
+      <div className="sticky bottom-0 grid grid-cols-3 border-t border-black">
         <button>{!!anime["watch_status"] ? "unfollow" : "follow"}</button>
-        <button>{anime["score"] || "rate"}</button>
+        <RateButton score={anime["score"]} />
         <button>{anime["watch_status"] || "status"}</button>
       </div>
     </>
