@@ -82,7 +82,7 @@ export function RateButton({ animeId, score }) {
 export function StatusButton({ animeId, watchStatus }) {
   return (
     <PopupButton text={watchStatus || "status"} className="w-1/3 grid border border-black bg-white shadow">
-      {["to watch", "watching", "watched", "dropped"].map(s => (
+      {["plan_to_watch", "watching", "completed", "dropped"].map(s => (
         <button
           key={s}
           className="py-1 border border-black"
