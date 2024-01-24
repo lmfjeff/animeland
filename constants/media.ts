@@ -19,6 +19,7 @@ export const WATCH_STATUS_DISPLAY_NAME: Record<string, string> = {
   on_hold: "暫停",
 }
 
+// todo use icon instead
 export const WATCH_STATUS_COLOR: Record<string, string> = {
   plan_to_watch: "#efecca",
   watching: "#64a338",

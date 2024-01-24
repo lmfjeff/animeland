@@ -4,8 +4,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export default function DebugButton() {
   const search = useSearchParams()
-  const newSearch = new URLSearchParams(search.toString())
-  newSearch.append("debug", "1")
   const pathname = usePathname()
   const router = useRouter()
   return (
@@ -13,6 +11,13 @@ export default function DebugButton() {
       src="/debug.svg"
       className="size-8 cursor-pointer"
       onClick={() => {
+        const old = search.get("debug")
+        const newSearch = new URLSearchParams(search.toString())
+        if (old) {
+          newSearch.delete("debug")
+        } else {
+          newSearch.set("debug", "1")
+        }
         router.push(`${pathname}?${newSearch.toString()}`)
       }}
     />
