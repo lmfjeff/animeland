@@ -20,9 +20,9 @@ export const WATCH_STATUS_DISPLAY_NAME: Record<string, string> = {
 }
 
 export const WATCH_STATUS_COLOR: Record<string, string> = {
-  plan_to_watch: "green",
-  watching: "green",
-  dropped: "red",
-  completed: "blue",
-  on_hold: "yellow",
+  plan_to_watch: "#efecca",
+  watching: "#64a338",
+  dropped: "#e03b24",
+  completed: "#3865a3",
+  on_hold: "#ffcc00",
 }

@@ -7,11 +7,13 @@ import { follow, unfollow } from "@/actions/follow"
 import { cn } from "@/utils/tw"
 import { Modal, ModalContent } from "./Modal"
 import { AnimeDetail } from "./AnimeDetail"
+import { WATCH_STATUS_COLOR } from "@/constants/media"
 
 export default function AnimeCard({ anime, q }) {
   const [open, setOpen] = useState(false)
   const { sort } = q
   const isFollowed = !!anime.watch_status
+  const statusColor = isFollowed ? WATCH_STATUS_COLOR[anime.watch_status] : ""
 
   return (
     <div className="flex flex-col">
@@ -47,7 +49,8 @@ export default function AnimeCard({ anime, q }) {
           </div>
           <img
             src="/plus.svg"
-            className={cn("size-4 rounded-full mr-0.5 bg-gray-400", { "bg-green-400": isFollowed })}
+            className={cn("size-4 rounded-full mr-0.5")}
+            style={{ background: statusColor || "gray" }}
           />
         </div>
       </div>

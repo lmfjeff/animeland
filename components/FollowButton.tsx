@@ -1,5 +1,6 @@
 "use client"
 import { follow, unfollow } from "@/actions/follow"
+import { WATCH_STATUS_OPTIONS } from "@/constants/media"
 import { FloatingFocusManager, useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
 import { range } from "ramda"
 import { useState } from "react"
@@ -82,7 +83,7 @@ export function RateButton({ animeId, score }) {
 export function StatusButton({ animeId, watchStatus }) {
   return (
     <PopupButton text={watchStatus || "status"} className="w-1/3 grid border border-black bg-white shadow">
-      {["plan_to_watch", "watching", "completed", "dropped"].map(s => (
+      {WATCH_STATUS_OPTIONS.map(s => (
         <button
           key={s}
           className="py-1 border border-black"
