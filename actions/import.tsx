@@ -53,7 +53,7 @@ export async function importFollow(data) {
   const batchData = list.map(follow => {
     const { score, watch_status, created_at, updated_at } = follow
     return {
-      score: parseInt(score),
+      score: parseFloat(score),
       watch_status,
       created_at,
       updated_at,
