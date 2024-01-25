@@ -12,7 +12,7 @@ export default async function Animes({ params, searchParams }) {
     year: searchParams.year ? parseInt(searchParams.year) : nowDayjs.year(),
     season: searchParams.season ? parseInt(searchParams.season) : Math.floor(nowDayjs.month() / 3) + 1,
   }
-  const { year, season, sort } = q
+  const { year, season, sort, follow } = q
 
   // todo get session from rootlayout
   const session = await auth()
@@ -46,6 +46,11 @@ export default async function Animes({ params, searchParams }) {
         anime["score"] = found.score
       }
     })
+    if (follow === "show") {
+      animes = animes.filter(anime => !!anime["watch_status"])
+    } else if (follow === "hide") {
+      animes = animes.filter(anime => !anime["watch_status"])
+    }
     // transform time/dayofweek (jp to hk) & 30hr, sort time, group by day of week
     animes = animes.map(transformAnimeDay).sort(sortByTime)
     if (!sort || sort === "day") {

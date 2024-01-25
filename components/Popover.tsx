@@ -16,6 +16,7 @@ import {
   FloatingFocusManager,
   useId,
 } from "@floating-ui/react"
+import { cn } from "@/utils/tw"
 
 interface PopoverOptions {
   initialOpen?: boolean
@@ -152,7 +153,7 @@ export const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTML
 )
 
 export const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(function PopoverContent(
-  { style, ...props },
+  { style, className, ...props },
   propRef
 ) {
   const { context: floatingContext, ...context } = usePopoverContext()
@@ -169,6 +170,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<H
           aria-labelledby={context.labelId}
           aria-describedby={context.descriptionId}
           {...context.getFloatingProps(props)}
+          className={cn(className, "z-popover")}
         >
           {props.children}
         </div>

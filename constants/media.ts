@@ -27,3 +27,16 @@ export const WATCH_STATUS_COLOR: Record<string, string> = {
   completed: "dodgerblue",
   on_hold: "gold",
 }
+
+export const FOLLOW_OPTIONS = [
+  { text: "all", value: "all" },
+  { text: "hide", value: "hide" },
+  { text: "show", value: "show" },
+]
+
+export const SORT_OPTIONS = [
+  { text: "none", value: "none" },
+  { text: "day", value: "day" },
+  { text: "MAL", value: "mal-score" },
+  { text: "Anilist", value: "anilist-score" },
+]

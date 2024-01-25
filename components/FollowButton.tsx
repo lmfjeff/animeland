@@ -27,7 +27,7 @@ export function RateButton({ animeId, score }) {
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
       <PopoverTrigger onClick={() => setOpen(v => !v)}>{score || "rate"}</PopoverTrigger>
-      <PopoverContent className="bg-white border border-black z-popover w-1/3 grid grid-cols-2">
+      <PopoverContent className="bg-white border border-black w-1/3 grid grid-cols-2">
         {range(0, 21).map(n => (
           <button
             key={n}
@@ -57,7 +57,7 @@ export function StatusButton({ animeId, watchStatus }) {
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
       <PopoverTrigger onClick={() => setOpen(v => !v)}>{watchStatus || "status"}</PopoverTrigger>
-      <PopoverContent className="bg-white border border-black z-popover w-1/3 grid">
+      <PopoverContent className="bg-white border border-black w-1/3 grid">
         {WATCH_STATUS_OPTIONS.map(s => (
           <button
             key={s}
