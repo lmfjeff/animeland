@@ -1,7 +1,7 @@
 import Link from "next/link"
 import HotkeySeason from "./HotkeySeason"
-import FollowFilter from "./FollowFilter"
-import SortFilter from "./SortFilter"
+import Filter from "./Filter"
+import { FOLLOW_OPTIONS, SORT_OPTIONS } from "@/constants/media"
 
 export default function AnimeFilter({ q }) {
   const { year, season } = q
@@ -40,8 +40,8 @@ export default function AnimeFilter({ q }) {
         </Link>
       </div>
       <div className="flex p-1 gap-2">
-        <FollowFilter q={q} />
-        <SortFilter q={q} />
+        <Filter q={q} name="follow" options={FOLLOW_OPTIONS} />
+        <Filter q={q} name="sort" options={SORT_OPTIONS} />
       </div>
     </>
   )
