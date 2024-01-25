@@ -10,14 +10,14 @@ import { AnimeDetail } from "./AnimeDetail"
 import { WATCH_STATUS_COLOR } from "@/constants/media"
 
 export default function AnimeCard({ anime, q }) {
-  const [open, setOpen] = useState(false)
+  const [detailModalOpen, setDetailModalOpen] = useState(false)
   const { sort } = q
   const isFollowed = !!anime.watch_status
   const statusColor = isFollowed ? WATCH_STATUS_COLOR[anime.watch_status] : ""
 
   return (
     <>
-      <div className="flex flex-col cursor-pointer" onClick={() => setOpen(!open)}>
+      <div className="flex flex-col cursor-pointer" onClick={() => setDetailModalOpen(!detailModalOpen)}>
         <>
           {q.debug ? (
             <div className="w-full aspect-square border border-gray-400 flex justify-center items-center">
@@ -39,7 +39,7 @@ export default function AnimeCard({ anime, q }) {
           </div>
         </div>
       </div>
-      <Modal open={open} onOpenChange={setOpen}>
+      <Modal open={detailModalOpen} onOpenChange={setDetailModalOpen}>
         <ModalContent className="bg-white h-1/2 flex flex-col">
           <AnimeDetail anime={anime} />
         </ModalContent>

@@ -25,7 +25,7 @@ export const nextAuthOptions = {
             username: credentials?.username,
           },
         })
-        if (!user) throw Error("no this user")
+        if (!user) throw Error("no_this_user")
         return user
       },
     }),
