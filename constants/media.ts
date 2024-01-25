@@ -21,9 +21,9 @@ export const WATCH_STATUS_DISPLAY_NAME: Record<string, string> = {
 
 // todo use icon instead
 export const WATCH_STATUS_COLOR: Record<string, string> = {
-  plan_to_watch: "#efecca",
-  watching: "#64a338",
-  dropped: "#e03b24",
-  completed: "#3865a3",
-  on_hold: "#ffcc00",
+  plan_to_watch: "gray",
+  watching: "forestgreen",
+  dropped: "crimson",
+  completed: "dodgerblue",
+  on_hold: "gold",
 }

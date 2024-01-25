@@ -8,6 +8,7 @@ import { cn } from "@/utils/tw"
 import { Modal, ModalContent } from "./Modal"
 import { AnimeDetail } from "./AnimeDetail"
 import { WATCH_STATUS_COLOR } from "@/constants/media"
+import { RateButton } from "./FollowButton"
 
 export default function AnimeCard({ anime, q }) {
   const [detailModalOpen, setDetailModalOpen] = useState(false)
@@ -17,17 +18,18 @@ export default function AnimeCard({ anime, q }) {
 
   return (
     <>
-      <div className="flex flex-col cursor-pointer" onClick={() => setDetailModalOpen(!detailModalOpen)}>
-        <>
-          {q.debug ? (
-            <div className="w-full aspect-square border border-gray-400 flex justify-center items-center">
-              <img src="/image-slash.svg" alt="no image" className="w-1/3" />
-            </div>
-          ) : (
-            <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
-          )}
-        </>
-        <div className="border-b border-x border-gray-500">
+      <div
+        className="flex flex-col cursor-pointer border border-gray-500 divide-y divide-gray-500"
+        onClick={() => setDetailModalOpen(!detailModalOpen)}
+      >
+        {q.debug ? (
+          <div className="w-full aspect-square flex justify-center items-center">
+            <img src="/image-slash.svg" alt="no image" className="w-1/3" />
+          </div>
+        ) : (
+          <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
+        )}
+        <div>
           <div className="text-sm line-clamp-1">{anime.titles?.ja}</div>
           <div className="text-sm line-clamp-1 whitespace-pre-wrap flex items-center justify-between">
             <div>
@@ -35,7 +37,7 @@ export default function AnimeCard({ anime, q }) {
               {sort === "mal-score" && `${anime?.score_external?.mal || "\n"}`}
               {sort === "anilist-score" && `${anime?.score_external?.anilist || "\n"}`}
             </div>
-            <div className={cn("size-2 rounded-full mr-1")} style={{ background: statusColor || "gray" }} />
+            <div className={cn("size-2 rounded-full mr-1")} style={{ background: statusColor }} />
           </div>
         </div>
       </div>

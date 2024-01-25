@@ -4,6 +4,7 @@ import { WATCH_STATUS_OPTIONS } from "@/constants/media"
 import { FloatingFocusManager, useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
 import { range } from "ramda"
 import { useState } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "./Popover"
 
 export function FollowButton({ animeId, isFollowed }) {
   return (
@@ -21,79 +22,54 @@ export function FollowButton({ animeId, isFollowed }) {
   )
 }
 
-function PopupButton({ text, className, children }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    placement: "top",
-  })
-  const click = useClick(context)
-  const dismiss = useDismiss(context)
-  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
-
-  return (
-    <>
-      <button ref={refs.setReference} {...getReferenceProps()}>
-        {text}
-      </button>
-      {isOpen && (
-        <FloatingFocusManager context={context} modal={false}>
-          <div
-            ref={refs.setFloating}
-            style={floatingStyles}
-            {...getFloatingProps()}
-            className={className}
-            // className="w-1/3 grid grid-cols-2 border border-black bg-white shadow"
-          >
-            {children}
-          </div>
-        </FloatingFocusManager>
-      )}
-    </>
-  )
-}
-
 export function RateButton({ animeId, score }) {
+  const [open, setOpen] = useState(false)
   return (
-    <PopupButton text={score || "rate"} className="w-1/3 grid grid-cols-2 border border-black bg-white shadow">
-      {range(0, 21).map(n => (
+    <Popover open={open} onOpenChange={setOpen} placement="top">
+      <PopoverTrigger onClick={() => setOpen(v => !v)}>{score || "rate"}</PopoverTrigger>
+      <PopoverContent className="bg-white border border-black z-popover w-1/3 grid grid-cols-2">
+        {range(0, 21).map(n => (
+          <button
+            key={n}
+            className="py-1 border border-black"
+            onClick={() => {
+              follow(animeId, n / 2, undefined)
+            }}
+          >
+            {n / 2}
+          </button>
+        ))}
         <button
-          key={n}
           className="py-1 border border-black"
           onClick={() => {
-            follow(animeId, n / 2, undefined)
+            follow(animeId, null, undefined)
           }}
         >
-          {n / 2}
+          X
         </button>
-      ))}
-      <button
-        className="py-1 border border-black"
-        onClick={() => {
-          follow(animeId, null, undefined)
-        }}
-      >
-        X
-      </button>
-    </PopupButton>
+      </PopoverContent>
+    </Popover>
   )
 }
 
 export function StatusButton({ animeId, watchStatus }) {
+  const [open, setOpen] = useState(false)
   return (
-    <PopupButton text={watchStatus || "status"} className="w-1/3 grid border border-black bg-white shadow">
-      {WATCH_STATUS_OPTIONS.map(s => (
-        <button
-          key={s}
-          className="py-1 border border-black"
-          onClick={() => {
-            follow(animeId, undefined, s)
-          }}
-        >
-          {s}
-        </button>
-      ))}
-    </PopupButton>
+    <Popover open={open} onOpenChange={setOpen} placement="top">
+      <PopoverTrigger onClick={() => setOpen(v => !v)}>{watchStatus || "status"}</PopoverTrigger>
+      <PopoverContent className="bg-white border border-black z-popover w-1/3 grid">
+        {WATCH_STATUS_OPTIONS.map(s => (
+          <button
+            key={s}
+            className="py-1 border border-black"
+            onClick={() => {
+              follow(animeId, undefined, s)
+            }}
+          >
+            {s}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   )
 }

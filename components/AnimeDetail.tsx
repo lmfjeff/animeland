@@ -51,7 +51,6 @@ export function AnimeDetail({ anime }) {
         <FollowButton animeId={anime.id} isFollowed={isFollowed} />
         <RateButton animeId={anime.id} score={anime["score"]} />
         <StatusButton animeId={anime.id} watchStatus={anime["watch_status"]} />
-        {/* <button>{anime["watch_status"] || "status"}</button> */}
       </div>
     </>
   )
