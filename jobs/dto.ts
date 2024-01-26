@@ -8,7 +8,7 @@ import { seasonIntMap } from "@/constants/media"
 export function newMediaToUpdateInput(newMedia, oldMedia) {
   // todo deal with genres for newMedia
   const diffKeys = Object.keys(newMedia).filter(key => !equals(newMedia[key], oldMedia[key]))
-  if (diffKeys.length <= 1) return null
+  if (diffKeys.length < 1) return null
   const merged = mergeDeepRight(pick(diffKeys, oldMedia), pick(diffKeys, newMedia))
   return merged
 }
