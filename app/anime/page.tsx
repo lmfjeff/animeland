@@ -4,6 +4,7 @@ import AnimeFilter from "@/components/AnimeFilter"
 import AnimeList from "@/components/AnimeList"
 import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
 import { auth } from "@/lib/auth"
+import SeasonPagination from "@/components/SeasonPagination"
 
 export default async function Animes({ params, searchParams }) {
   const nowDayjs = gethkNow()
@@ -73,7 +74,10 @@ export default async function Animes({ params, searchParams }) {
   return (
     <div className="p-2">
       <div>date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
-      <AnimeFilter q={q} />
+      <div className="flex items-center">
+        <AnimeFilter q={q} />
+        <SeasonPagination q={q} />
+      </div>
       <AnimeList animes={animes} q={q} />
     </div>
   )
