@@ -6,6 +6,7 @@ import { cn } from "@/utils/tw"
 import FollowImport from "@/components/FollowImport"
 import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS } from "@/constants/media"
 import Filter from "@/components/Filter"
+import { Prisma } from "@prisma/client"
 
 export default async function Follow({ searchParams }) {
   let { page, sort, order, watch_status } = searchParams
@@ -14,17 +15,21 @@ export default async function Follow({ searchParams }) {
   async function fetchFollow() {
     const defaultSort = FOLLOWLIST_SORT_OPTIONS[0].value
     const finalSort = sort ? (FOLLOWLIST_SORT_OPTIONS.find(v => v.value === sort) ? sort : defaultSort) : defaultSort
+    const sortInput: Prisma.FollowListOrderByWithRelationInput | Prisma.FollowListOrderByWithRelationInput[] = {}
+    if (["score"].includes(finalSort)) {
+      sortInput[finalSort] = {
+        sort: order === "asc" ? "asc" : "desc",
+        nulls: "last",
+      }
+    } else {
+      sortInput[finalSort] = order === "asc" ? "asc" : "desc"
+    }
     const findMany = prisma.followList.findMany({
       where: {
         user_id: session?.user?.id,
         watch_status,
       },
-      orderBy: {
-        [finalSort]: {
-          sort: order === "asc" ? "asc" : "desc",
-          nulls: "last",
-        },
-      },
+      orderBy: sortInput,
       include: {
         media: true,
       },

@@ -52,9 +52,8 @@ export const SORT_OPTIONS = [
   { text: "Anilist", value: "anilist-score" },
 ]
 
-// todo make updated_at nullable?
 export const FOLLOWLIST_SORT_OPTIONS = [
-  // { text: "updated_at", value: "updated_at" },
-  // { text: "created_at", value: "created_at" },
+  { text: "updated_at", value: "updated_at" },
+  { text: "created_at", value: "created_at" },
   { text: "score", value: "score" },
 ]
