@@ -5,38 +5,51 @@ import AnimeList from "@/components/AnimeList"
 import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
 import { auth } from "@/lib/auth"
 import SeasonPagination from "@/components/SeasonPagination"
+import { pastSeasons } from "@/utils/date"
 
 export default async function Animes({ params, searchParams }) {
   const nowDayjs = gethkNow()
+  const nowYear = nowDayjs.year()
+  const nowSeason = Math.floor(nowDayjs.month() / 3) + 1
   const q = {
     ...searchParams,
-    year: searchParams.year ? parseInt(searchParams.year) : nowDayjs.year(),
-    season: searchParams.season ? parseInt(searchParams.season) : Math.floor(nowDayjs.month() / 3) + 1,
+    year: searchParams.year ? parseInt(searchParams.year) : nowYear,
+    season: searchParams.season ? parseInt(searchParams.season) : nowSeason,
   }
   const { year, season, sort, follow } = q
 
   // todo get session from rootlayout
   const session = await auth()
   async function fetchAnimes() {
+    const mediaWhere: Prisma.MediaWhereInput = {
+      OR: [
+        {
+          season: season,
+          year: year,
+        },
+        ...(year === nowYear && season === nowSeason
+          ? [
+              {
+                status: "RELEASING",
+                OR: pastSeasons(year, season, 3),
+              },
+            ]
+          : []),
+      ],
+      day_of_week: {
+        not: Prisma.DbNull,
+      },
+      time: {
+        not: Prisma.DbNull,
+      },
+    }
     // todo also include current airing past animes
     let animes = await prisma.media.findMany({
-      where: {
-        season: season,
-        year: year,
-        day_of_week: {
-          not: Prisma.DbNull,
-        },
-      },
+      where: mediaWhere,
     })
     const follows = await prisma.followList.findMany({
       where: {
-        media: {
-          season: season,
-          year: year,
-          day_of_week: {
-            not: Prisma.DbNull,
-          },
-        },
+        media: mediaWhere,
         user_id: session?.user?.id,
       },
     })

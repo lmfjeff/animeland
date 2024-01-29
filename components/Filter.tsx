@@ -18,7 +18,8 @@ export default function Filter({ q, name, options }) {
           })}
           onClick={() => {
             const newSearch = new URLSearchParams(search.toString())
-            if (v.value === "all") {
+            const oldValue = newSearch.get(name)
+            if (v.value === oldValue) {
               newSearch.delete(name)
             } else {
               newSearch.set(name, v.value)

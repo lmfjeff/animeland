@@ -10,7 +10,6 @@ export const seasonList = ["winter", "spring", "summer", "fall"]
 export const weekdayOption = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
 export const FOLLOWLIST_WATCH_STATUS_OPTIONS = [
-  { text: "all", value: "all" },
   { text: "待看", value: "plan_to_watch" },
   { text: "追梗", value: "watching" },
   { text: "棄番", value: "dropped" },

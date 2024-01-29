@@ -1,6 +1,6 @@
 "use client"
 import { follow, unfollow } from "@/actions/follow"
-import { WATCH_STATUS_OPTIONS } from "@/constants/media"
+import { FOLLOWLIST_WATCH_STATUS_OPTIONS } from "@/constants/media"
 import { FloatingFocusManager, useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
 import { range } from "ramda"
 import { useState } from "react"
@@ -16,6 +16,7 @@ export function FollowButton({ animeId, isFollowed }) {
           follow(animeId)
         }
       }}
+      className="py-1 text-center border"
     >
       {isFollowed ? "unfollow" : "follow"}
     </button>
@@ -26,7 +27,9 @@ export function RateButton({ animeId, score }) {
   const [open, setOpen] = useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
-      <PopoverTrigger onClick={() => setOpen(v => !v)}>{score || "rate"}</PopoverTrigger>
+      <PopoverTrigger onClick={() => setOpen(v => !v)} className="py-1 text-center border">
+        {score || "rate"}
+      </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid grid-cols-2">
         {range(0, 21).map(n => (
           <button
@@ -56,17 +59,19 @@ export function StatusButton({ animeId, watchStatus }) {
   const [open, setOpen] = useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
-      <PopoverTrigger onClick={() => setOpen(v => !v)}>{watchStatus || "status"}</PopoverTrigger>
+      <PopoverTrigger onClick={() => setOpen(v => !v)} className="py-1 text-center border">
+        {FOLLOWLIST_WATCH_STATUS_OPTIONS.find(v => v.value === watchStatus)?.text || "status"}
+      </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid">
-        {WATCH_STATUS_OPTIONS.map(s => (
+        {FOLLOWLIST_WATCH_STATUS_OPTIONS.map(s => (
           <button
-            key={s}
+            key={s.value}
             className="py-1 border border-black"
             onClick={() => {
-              follow(animeId, undefined, s)
+              follow(animeId, undefined, s.value)
             }}
           >
-            {s}
+            {s.text}
           </button>
         ))}
       </PopoverContent>

@@ -7,6 +7,7 @@ import FollowImport from "@/components/FollowImport"
 import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS } from "@/constants/media"
 import Filter from "@/components/Filter"
 import { Prisma } from "@prisma/client"
+import { RateButton, StatusButton } from "@/components/FollowButton"
 
 export default async function Follow({ searchParams }) {
   let { page, sort, order, watch_status } = searchParams
@@ -77,15 +78,20 @@ export default async function Follow({ searchParams }) {
         </Link>
         <div>(total: {count})</div>
       </div>
-      <div className="flex p-1 gap-2">
+      <div className="flex p-1 gap-2 flex-wrap">
         <Filter q={searchParams} name="sort" options={FOLLOWLIST_SORT_OPTIONS} />
         <Filter q={searchParams} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
       </div>
       <div className="flex flex-col divide-y">
-        {follows.map(follow => (
-          <div key={follow.media_id} className="flex">
-            <div>{follow.media.titles?.ja}</div>
-            <div className="ml-auto">{follow.score}</div>
+        {follows.map(f => (
+          <div key={f.media_id} className="flex items-center gap-1">
+            <div className="line-clamp-1">{f.media.titles?.ja}</div>
+            <div className="ml-auto min-w-[40px] max-w-[40px] overflow-clip">
+              <StatusButton animeId={f.media_id} watchStatus={f.watch_status} />
+            </div>
+            <div className="min-w-[30px]">
+              <RateButton animeId={f.media_id} score={f.score} />
+            </div>
           </div>
         ))}
       </div>
