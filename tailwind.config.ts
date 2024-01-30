@@ -24,6 +24,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwind-scrollbar-hide")],
+  plugins: [require("tailwind-scrollbar-hide"), require("@pyncz/tailwind-mask-image")],
 }
 export default config

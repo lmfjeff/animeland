@@ -8,12 +8,19 @@ import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS } from "@/cons
 import Filter from "@/components/Filter"
 import { Prisma } from "@prisma/client"
 import { RateButton, StatusButton } from "@/components/FollowButton"
+import Pagination from "@/components/Pagination"
 
 export default async function Follow({ searchParams }) {
-  let { page, sort, order, watch_status } = searchParams
-  page = page ? parseInt(page) : 1
+  const perPage = 100
+  const q = {
+    ...searchParams,
+    page: searchParams.page ? parseInt(searchParams.page) : 1,
+  }
+  const { page, sort, order, watch_status } = q
   const session = await auth()
+
   if (!session) return <div className="text-center">please login</div>
+
   async function fetchFollow() {
     const defaultSort = "updated_at"
     const finalSort = sort ? (FOLLOWLIST_SORT_OPTIONS.find(v => v.value === sort) ? sort : defaultSort) : defaultSort
@@ -36,8 +43,8 @@ export default async function Follow({ searchParams }) {
       include: {
         media: true,
       },
-      take: 100,
-      skip: 100 * ((page || 1) - 1),
+      take: perPage,
+      skip: perPage * ((page || 1) - 1),
     })
     const count = prisma.followList.count({
       where,
@@ -48,36 +55,7 @@ export default async function Follow({ searchParams }) {
   return (
     <div className="p-2 flex flex-col gap-2 grow">
       <FollowImport />
-      <div className="flex gap-2">
-        <Link
-          href={{
-            pathname: "/follow",
-            query: {
-              ...searchParams,
-              page: page - 1,
-            },
-          }}
-          className={cn("border", { "bg-gray-300": page <= 1 })}
-        >
-          prev
-        </Link>
-        <div>
-          page: {page}/{Math.ceil(count / 100)}
-        </div>
-        <Link
-          href={{
-            pathname: "/follow",
-            query: {
-              ...searchParams,
-              page: page + 1,
-            },
-          }}
-          className={cn("border", { "bg-gray-300": page >= Math.ceil(count / 100) })}
-        >
-          next
-        </Link>
-        <div>(total: {count})</div>
-      </div>
+      <Pagination q={q} count={count} perPage={perPage} />
       <div className="flex p-1 gap-2 flex-wrap">
         <Filter q={searchParams} name="sort" options={FOLLOWLIST_SORT_OPTIONS} />
         <Filter q={searchParams} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
