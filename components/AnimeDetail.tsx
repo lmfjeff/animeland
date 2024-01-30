@@ -47,7 +47,7 @@ export function AnimeDetail({ anime }) {
         </div>
         <div className="border p-2 [&_br]:hidden" dangerouslySetInnerHTML={{ __html: anime?.summary?.en || "" }}></div>
       </div>
-      <div className="sticky bottom-0 grid grid-cols-3 border-t border-black">
+      <div className="bg-blue-200 sticky bottom-0 grid grid-cols-3 border-t border-black">
         <FollowButton animeId={anime.id} isFollowed={isFollowed} />
         <RateButton animeId={anime.id} score={anime["score"]} />
         <StatusButton animeId={anime.id} watchStatus={anime["watch_status"]} />

@@ -4,25 +4,28 @@ import prisma from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
 export default async function Anime({ params }) {
-  const { id } = params
+  let { id } = params
+  id = parseInt(id)
 
   // todo get session from rootlayout
   const session = await auth()
   async function fetchAnime() {
     const anime = await prisma.media.findUnique({
       where: {
-        id: parseInt(id),
+        id,
       },
     })
-    const follows = await prisma.followList.findFirst({
-      where: {
-        media_id: parseInt(id),
-        user_id: session?.user?.id,
-      },
-    })
-    if (anime && follows) {
-      anime["watch_status"] = follows.watch_status
-      anime["score"] = follows.score
+    if (session) {
+      const follows = await prisma.followList.findFirst({
+        where: {
+          media_id: id,
+          user_id: session?.user?.id,
+        },
+      })
+      if (anime && follows) {
+        anime["watch_status"] = follows.watch_status
+        anime["score"] = follows.score
+      }
     }
     return anime
   }
@@ -30,5 +33,9 @@ export default async function Anime({ params }) {
   if (!anime) {
     notFound()
   }
-  return <AnimeDetail anime={anime} />
+  return (
+    <div className="bg-white flex flex-col grow">
+      <AnimeDetail anime={anime} />
+    </div>
+  )
 }

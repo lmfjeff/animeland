@@ -5,6 +5,7 @@ import { useState } from "react"
 import DebugButton from "./DebugButton"
 import { Modal, ModalContent } from "./Modal"
 import LoginForm from "./LoginForm"
+import SearchInput from "./SearchInput"
 
 export default function Nav({ session }) {
   const [loginModalOpen, setLoginModalOpen] = useState(false)
@@ -14,7 +15,8 @@ export default function Nav({ session }) {
       <Link href="/anime">
         <img src="/home.svg" className="size-8" />
       </Link>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
+        <SearchInput />
         <DebugButton />
         <Link href="/follow">
           <img src="/heart.svg" className="size-8" />

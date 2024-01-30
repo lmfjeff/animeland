@@ -32,11 +32,11 @@ export default function SeasonPagination({ q }) {
   useHotkeys("right,d", handleRight)
   return (
     <div className="flex items-center">
-      <img src="left.svg" className="size-8 cursor-pointer" onClick={handleLeft} />
+      <img src="/left.svg" className="size-8 cursor-pointer" onClick={handleLeft} />
       <div>
         {year}-{season}
       </div>
-      <img src="right.svg" className="size-8 cursor-pointer" onClick={handleRight} />
+      <img src="/right.svg" className="size-8 cursor-pointer" onClick={handleRight} />
     </div>
   )
 }
