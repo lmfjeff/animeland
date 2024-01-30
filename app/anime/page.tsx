@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
-import AnimeFilter from "@/components/AnimeFilter"
 import AnimeList from "@/components/AnimeList"
 import { createAnimeGroupByDay, gethkNow, sortByTime, transformAnimeDay } from "@/utils/anime-transform"
 import { auth } from "@/lib/auth"
 import SeasonPagination from "@/components/SeasonPagination"
 import { pastSeasons } from "@/utils/date"
+import Filter from "@/components/Filter"
+import { FOLLOW_OPTIONS, SORT_OPTIONS } from "@/constants/media"
 
 export default async function Animes({ params, searchParams }) {
   const nowDayjs = gethkNow()
@@ -47,19 +48,21 @@ export default async function Animes({ params, searchParams }) {
     let animes = await prisma.media.findMany({
       where: mediaWhere,
     })
-    const follows = await prisma.followList.findMany({
-      where: {
-        media: mediaWhere,
-        user_id: session?.user?.id,
-      },
-    })
-    animes.forEach(anime => {
-      const found = follows.find(follow => follow.media_id === anime.id)
-      if (found) {
-        anime["watch_status"] = found.watch_status
-        anime["score"] = found.score
-      }
-    })
+    if (session) {
+      const follows = await prisma.followList.findMany({
+        where: {
+          media: mediaWhere,
+          user_id: session?.user?.id,
+        },
+      })
+      animes.forEach(anime => {
+        const found = follows.find(follow => follow.media_id === anime.id)
+        if (found) {
+          anime["watch_status"] = found.watch_status
+          anime["score"] = found.score
+        }
+      })
+    }
     if (follow === "show") {
       animes = animes.filter(anime => !!anime["watch_status"])
     } else if (follow === "hide") {
@@ -67,7 +70,7 @@ export default async function Animes({ params, searchParams }) {
     }
     // transform time/dayofweek (jp to hk) & 30hr, sort time, group by day of week
     animes = animes.map(transformAnimeDay).sort(sortByTime)
-    if (!sort || sort === "day") {
+    if (!sort) {
       animes = createAnimeGroupByDay(animes)
     }
     if (sort === "mal-score") {
@@ -86,10 +89,11 @@ export default async function Animes({ params, searchParams }) {
 
   return (
     <div className="p-2">
-      <div>date: {gethkNow().format("YYYY-MM-DD HH:mm:ss")}</div>
-      <div className="flex items-center">
-        <AnimeFilter q={q} />
+      {/* <div>{gethkNow().format("MM-DD HH:mm:ss")}</div> */}
+      <div className="flex items-center flex-wrap gap-y-1 gap-x-3 mb-2">
         <SeasonPagination q={q} />
+        {session && <Filter q={q} name="follow" options={FOLLOW_OPTIONS} />}
+        <Filter q={q} name="sort" options={SORT_OPTIONS} />
       </div>
       <AnimeList animes={animes} q={q} />
     </div>

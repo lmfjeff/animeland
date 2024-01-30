@@ -3,7 +3,7 @@ import { equals, identity, mergeDeepRight, pick, pickBy } from "ramda"
 import slugify from "slugify"
 import { anilistDateToString } from "@/jobs/utils"
 import { createMediaInputType, updateMediaInputType } from "@/types/prisma"
-import { seasonIntMap } from "@/constants/media"
+import { SEASON_LIST } from "@/constants/media"
 
 export function newMediaToUpdateInput(newMedia, oldMedia) {
   // todo deal with genres for newMedia
@@ -41,6 +41,8 @@ export function anilistObjToMediaDTO(rawmedia) {
 
   const toBeSlug = countryOfOrigin === "JP" ? title.romaji ?? title.english : title.english
   const jaTitle = countryOfOrigin === "JP" ? { en_jp: title.romaji, ja: title.native } : {}
+  const seasonIndex = SEASON_LIST.indexOf(season?.toLowerCase())
+  const seasonNum = seasonIndex > 0 ? seasonIndex + 1 : undefined
 
   const input: createMediaInputType | updateMediaInputType = {
     titles: { en: title.english, ...jaTitle },
@@ -52,7 +54,7 @@ export function anilistObjToMediaDTO(rawmedia) {
     images: [{ md: coverImage.medium, lg: coverImage.large, xl: coverImage.extraLarge }],
     nsfw: isAdult,
     score_external: { anilist: averageScore },
-    season: seasonIntMap[season],
+    season: seasonNum,
     source,
     start_date: { jp: anilistDateToString(startDate) },
     status,

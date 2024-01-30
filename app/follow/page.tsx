@@ -13,8 +13,9 @@ export default async function Follow({ searchParams }) {
   let { page, sort, order, watch_status } = searchParams
   page = page ? parseInt(page) : 1
   const session = await auth()
+  if (!session) return <div className="text-center">please login</div>
   async function fetchFollow() {
-    const defaultSort = FOLLOWLIST_SORT_OPTIONS[0].value
+    const defaultSort = "updated_at"
     const finalSort = sort ? (FOLLOWLIST_SORT_OPTIONS.find(v => v.value === sort) ? sort : defaultSort) : defaultSort
     const sortInput: Prisma.FollowListOrderByWithRelationInput | Prisma.FollowListOrderByWithRelationInput[] = {}
     if (["score"].includes(finalSort)) {
@@ -25,11 +26,12 @@ export default async function Follow({ searchParams }) {
     } else {
       sortInput[finalSort] = order === "asc" ? "asc" : "desc"
     }
+    const where = {
+      user_id: session?.user?.id,
+      watch_status,
+    }
     const findMany = prisma.followList.findMany({
-      where: {
-        user_id: session?.user?.id,
-        watch_status,
-      },
+      where,
       orderBy: sortInput,
       include: {
         media: true,
@@ -38,9 +40,7 @@ export default async function Follow({ searchParams }) {
       skip: 100 * ((page || 1) - 1),
     })
     const count = prisma.followList.count({
-      where: {
-        user_id: session?.user?.id,
-      },
+      where,
     })
     return await prisma.$transaction([findMany, count])
   }
@@ -86,7 +86,7 @@ export default async function Follow({ searchParams }) {
         {follows.map(f => (
           <div key={f.media_id} className="flex items-center gap-1">
             <div className="line-clamp-1">{f.media.titles?.ja}</div>
-            <div className="ml-auto min-w-[40px] max-w-[40px] overflow-clip">
+            <div className="ml-auto min-w-[70px] max-w-[70px] overflow-clip">
               <StatusButton animeId={f.media_id} watchStatus={f.watch_status} />
             </div>
             <div className="min-w-[30px]">

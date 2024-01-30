@@ -1,14 +1,9 @@
 "use client"
-import Link from "next/link"
-import Button from "./Button"
-import { useEffect, useState } from "react"
-import { useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
-import { follow, unfollow } from "@/actions/follow"
+import { useState } from "react"
 import { cn } from "@/utils/tw"
 import { Modal, ModalContent } from "./Modal"
 import { AnimeDetail } from "./AnimeDetail"
 import { WATCH_STATUS_COLOR } from "@/constants/media"
-import { RateButton } from "./FollowButton"
 
 export default function AnimeCard({ anime, q }) {
   const [detailModalOpen, setDetailModalOpen] = useState(false)
@@ -37,7 +32,13 @@ export default function AnimeCard({ anime, q }) {
               {sort === "mal-score" && `${anime?.score_external?.mal || "\n"}`}
               {sort === "anilist-score" && `${anime?.score_external?.anilist || "\n"}`}
             </div>
-            <div className={cn("size-2 rounded-full mr-1")} style={{ background: statusColor }} />
+            {anime.score ? (
+              <div className="text-xs mr-1" style={{ color: statusColor }}>
+                {anime.score}
+              </div>
+            ) : (
+              <div className={cn("size-2 rounded-full mr-1")} style={{ background: statusColor }} />
+            )}
           </div>
         </div>
       </div>

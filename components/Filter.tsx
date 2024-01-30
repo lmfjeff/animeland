@@ -8,13 +8,13 @@ export default function Filter({ q, name, options }) {
   const pathname = usePathname()
   const router = useRouter()
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <div>{name}</div>
       {options.map(v => (
         <button
           key={v.value}
           className={cn("p-1 border border-black", {
-            "bg-blue-500 text-white": v.value === currentValue || (!currentValue && v.value === "all"),
+            "bg-blue-500 text-white": v.value === currentValue,
           })}
           onClick={() => {
             const newSearch = new URLSearchParams(search.toString())

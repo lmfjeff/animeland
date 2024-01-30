@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma"
 import { malObjToMediaDTO, newMediaToUpdateInput } from "./dto"
 import { isEmpty } from "ramda"
 import { MAL_CLIENT_ID } from "@/constants/env"
-import { seasonList } from "@/constants/media"
+import { SEASON_LIST } from "@/constants/media"
 
 async function malSyncJob() {
   let year = 2023
@@ -15,7 +15,7 @@ async function malSyncJob() {
 
       if (!nextPage) {
         url =
-          `https://api.myanimelist.net/v2/anime/season/${year}/${seasonList[season % 4]}?` +
+          `https://api.myanimelist.net/v2/anime/season/${year}/${SEASON_LIST[season % 4]}?` +
           new URLSearchParams({
             limit: "500",
             offset: "0",
