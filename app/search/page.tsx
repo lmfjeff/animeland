@@ -8,10 +8,11 @@ export default async function Search({ searchParams }) {
     q: searchParams.q ? searchParams.q : "",
   }
   const { page, q } = p
-  const animes = await search(q, page)
+  const [animes, count]: any = await search(q, page)
+
   return (
     <div className="p-1">
-      <Pagination q={p} count={1000} perPage={20} />
+      <Pagination q={p} count={count} perPage={20} />
       <div className="flex flex-col divide-y">
         {animes.map(anime => (
           <Link href={`/anime/${anime.id}`} key={anime.id} className="line-clamp-1 py-1">

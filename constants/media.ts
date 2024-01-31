@@ -31,6 +31,7 @@ export const SORT_OPTIONS = [
 ]
 
 export const FOLLOWLIST_SORT_OPTIONS = [
-  { text: "create", value: "created_at" },
+  { text: "year", value: "year" },
   { text: "score", value: "score" },
+  { text: "create", value: "created_at" },
 ]

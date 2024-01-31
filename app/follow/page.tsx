@@ -15,6 +15,8 @@ export default async function Follow({ searchParams }) {
   const q = {
     ...searchParams,
     page: searchParams.page ? parseInt(searchParams.page) : 1,
+    order: searchParams.order ? searchParams.order : "desc",
+    sort: searchParams.sort ? searchParams.sort : "updated_at",
   }
   const { page, sort, order, watch_status } = q
   const session = await auth()
@@ -22,16 +24,25 @@ export default async function Follow({ searchParams }) {
   if (!session) return <div className="text-center">please login</div>
 
   async function fetchFollow() {
-    const defaultSort = "updated_at"
-    const finalSort = sort ? (FOLLOWLIST_SORT_OPTIONS.find(v => v.value === sort) ? sort : defaultSort) : defaultSort
-    const sortInput: Prisma.FollowListOrderByWithRelationInput | Prisma.FollowListOrderByWithRelationInput[] = {}
-    if (["score"].includes(finalSort)) {
-      sortInput[finalSort] = {
-        sort: order === "asc" ? "asc" : "desc",
-        nulls: "last",
+    // todo validate sort / order
+    let orderBy: Prisma.FollowListOrderByWithRelationInput | Prisma.FollowListOrderByWithRelationInput[] = {}
+    if (sort === "year") {
+      orderBy = [{ media: { year: order } }, { media: { season: order } }, { media: { created_at: order } }]
+    } else if (sort === "score") {
+      orderBy = {
+        score: {
+          sort: order,
+          nulls: "last",
+        },
+      }
+    } else if (sort === "created_at") {
+      orderBy = {
+        created_at: order,
       }
     } else {
-      sortInput[finalSort] = order === "asc" ? "asc" : "desc"
+      orderBy = {
+        updated_at: order,
+      }
     }
     const where = {
       user_id: session?.user?.id,
@@ -39,7 +50,7 @@ export default async function Follow({ searchParams }) {
     }
     const findMany = prisma.followList.findMany({
       where,
-      orderBy: sortInput,
+      orderBy,
       include: {
         media: true,
       },
