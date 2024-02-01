@@ -56,7 +56,9 @@ export default function Pagination({ q, count, perPage }) {
           )}
           onClick={handleRight}
         />
-        <div>(total: {count})</div>
+        <div>
+          ({page === totalPage ? count % perPage : perPage} out of {count})
+        </div>
       </div>
     </>
   )

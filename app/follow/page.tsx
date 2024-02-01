@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import Link from "next/link"
 import { cn } from "@/utils/tw"
 import FollowImport from "@/components/FollowImport"
-import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS } from "@/constants/media"
+import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS, SEASON_LIST } from "@/constants/media"
 import Filter from "@/components/Filter"
 import { Prisma } from "@prisma/client"
 import { RateButton, StatusButton } from "@/components/FollowButton"
@@ -77,7 +77,10 @@ export default async function Follow({ searchParams }) {
             <Link href={`/anime/${f.media.id}`} className="line-clamp-1">
               {f.media.titles?.ja}
             </Link>
-            <div className="ml-auto min-w-[70px] max-w-[70px] overflow-clip">
+            <div className="ml-auto">
+              {f.media.year}-{f.media.season}
+            </div>
+            <div className="min-w-[70px] max-w-[70px] overflow-clip">
               <StatusButton animeId={f.media_id} watchStatus={f.watch_status} />
             </div>
             <div className="min-w-[30px]">

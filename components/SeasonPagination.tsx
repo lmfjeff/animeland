@@ -1,4 +1,5 @@
 "use client"
+import { SEASON_LIST } from "@/constants/media"
 import { usePathname, useRouter } from "next/navigation"
 import { useHotkeys } from "react-hotkeys-hook"
 
@@ -34,7 +35,7 @@ export default function SeasonPagination({ q }) {
     <div className="flex items-center">
       <img src="/left.svg" className="size-8 cursor-pointer" onClick={handleLeft} />
       <div>
-        {year}-{season}
+        {year} {SEASON_LIST[season - 1]}
       </div>
       <img src="/right.svg" className="size-8 cursor-pointer" onClick={handleRight} />
     </div>
