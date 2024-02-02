@@ -40,7 +40,7 @@ export default function AnimeCard({ anime, q }) {
         </div>
       </div>
       <Modal open={detailModalOpen} onOpenChange={setDetailModalOpen}>
-        <ModalContent className="bg-white h-1/2 flex flex-col">
+        <ModalContent className="bg-white w-full max-w-[650px] h-1/2 flex flex-col">
           <AnimeDetail anime={anime} />
         </ModalContent>
       </Modal>

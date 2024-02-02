@@ -28,7 +28,7 @@ export default function Nav({ session }) {
         />
       </div>
       <Modal open={loginModalOpen} onOpenChange={setLoginModalOpen}>
-        <ModalContent className="flex justify-center">
+        <ModalContent>
           <LoginForm session={session} setOpen={setLoginModalOpen} />
         </ModalContent>
       </Modal>
