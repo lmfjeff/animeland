@@ -68,8 +68,8 @@ export default async function Follow({ searchParams }) {
       <FollowImport />
       <Pagination q={q} count={count} perPage={perPage} />
       <div className="flex p-1 gap-2 flex-wrap">
-        <Filter q={searchParams} name="sort" options={FOLLOWLIST_SORT_OPTIONS} />
-        <Filter q={searchParams} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
+        <Filter q={q} name="sort" options={FOLLOWLIST_SORT_OPTIONS} hasOrder />
+        <Filter q={q} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
       </div>
       <div className="flex flex-col divide-y">
         {follows.map(f => (

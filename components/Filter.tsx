@@ -2,9 +2,9 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/utils/tw"
 
-export default function Filter({ q, name, options }) {
+export default function Filter({ q, name, options, hasOrder = false }) {
   const currentValue = q[name]
-  const search = useSearchParams()
+  const currentOrder = q.order
   const pathname = usePathname()
   const router = useRouter()
   return (
@@ -17,12 +17,20 @@ export default function Filter({ q, name, options }) {
             "bg-blue-500 text-white": v.value === currentValue,
           })}
           onClick={() => {
-            const newSearch = new URLSearchParams(search.toString())
-            const oldValue = newSearch.get(name)
-            if (v.value === oldValue) {
-              newSearch.delete(name)
+            const newSearch = new URLSearchParams(q)
+            if (!hasOrder) {
+              if (v.value === currentValue) {
+                newSearch.delete(name)
+              } else {
+                newSearch.set(name, v.value)
+              }
             } else {
-              newSearch.set(name, v.value)
+              if (v.value === currentValue) {
+                newSearch.set("order", currentOrder === "desc" ? "asc" : "desc")
+              } else {
+                newSearch.set(name, v.value)
+                newSearch.set("order", "desc")
+              }
             }
             router.push(`${pathname}?${newSearch.toString()}`)
           }}
@@ -30,6 +38,7 @@ export default function Filter({ q, name, options }) {
           {v.text}
         </button>
       ))}
+      {hasOrder && <div>{currentOrder === "desc" ? "↓" : "↑"}</div>}
     </div>
   )
 }
