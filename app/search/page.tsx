@@ -15,9 +15,16 @@ export default async function Search({ searchParams }) {
       <Pagination q={p} count={count} perPage={20} />
       <div className="flex flex-col divide-y">
         {animes.map(anime => (
-          <Link href={`/anime/${anime.id}`} key={anime.id} className="line-clamp-1 py-1">
-            {anime.titles?.ja || "??"}
-          </Link>
+          <div key={anime.id} className="py-1 gap-1 flex items-center">
+            <Link href={`/anime/${anime.id}`} className="line-clamp-1 grow">
+              {anime.titles?.ja || "??"}
+            </Link>
+            <div>
+              {anime.year}
+              {anime.season ? `-${anime.season}` : ``}
+            </div>
+            <div className="min-w-[80px] text-center">{anime.format}</div>
+          </div>
         ))}
       </div>
     </div>

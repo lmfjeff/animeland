@@ -74,10 +74,10 @@ export default async function Follow({ searchParams }) {
       <div className="flex flex-col divide-y">
         {follows.map(f => (
           <div key={f.media_id} className="flex items-center gap-1">
-            <Link href={`/anime/${f.media.id}`} className="line-clamp-1">
+            <Link href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
               {f.media.titles?.ja}
             </Link>
-            <div className="ml-auto">
+            <div>
               {f.media.year}-{f.media.season}
             </div>
             <div className="min-w-[70px] max-w-[70px] overflow-clip">

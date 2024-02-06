@@ -28,7 +28,7 @@ export function RateButton({ animeId, score }) {
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
       <PopoverTrigger onClick={() => setOpen(v => !v)} className="py-1 text-center border w-full">
-        {score || "rate"}
+        {score?.toString() || "rate"}
       </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid grid-cols-2">
         {range(0, 21).map(n => (
