@@ -17,7 +17,7 @@ export default async function Search({ searchParams }) {
         {animes.map(anime => (
           <div key={anime.id} className="py-1 gap-1 flex items-center">
             <Link href={`/anime/${anime.id}`} className="line-clamp-1 grow">
-              {anime.titles?.ja || "??"}
+              {anime.titles?.zh || anime.titles?.ja || "??"}
             </Link>
             <div>
               {anime.year}

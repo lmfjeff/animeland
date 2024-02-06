@@ -75,7 +75,7 @@ export default async function Follow({ searchParams }) {
         {follows.map(f => (
           <div key={f.media_id} className="flex items-center gap-1">
             <Link href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
-              {f.media.titles?.ja}
+              {f.media.titles?.zh || f.media.titles?.ja}
             </Link>
             <div>
               {f.media.year}-{f.media.season}
