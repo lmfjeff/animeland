@@ -1,14 +1,22 @@
 "use client"
 import Link from "next/link"
 import { cn } from "@/utils/tw"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DebugButton from "./DebugButton"
 import { Modal, ModalContent } from "./Modal"
 import LoginForm from "./LoginForm"
 import SearchInput from "./SearchInput"
+import { usePathname, useSearchParams } from "next/navigation"
+import NProgress from "nprogress"
 
 export default function Nav({ session }) {
   const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    NProgress.done()
+  }, [pathname, searchParams])
 
   return (
     <div className={cn("sticky top-0 z-sticky bg-blue-300 w-full", "flex justify-between p-1 gap-2 items-center")}>

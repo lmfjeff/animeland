@@ -1,10 +1,11 @@
 "use client"
 import { SEASON_LIST } from "@/constants/media"
-import { usePathname, useRouter } from "next/navigation"
+import { usePRouter } from "@/utils/router"
+import { usePathname } from "next/navigation"
 import { useHotkeys } from "react-hotkeys-hook"
 
 export default function SeasonPagination({ q }) {
-  const router = useRouter()
+  const router = usePRouter()
   const { year, season } = q
   const pathname = usePathname()
   function handleLeft() {

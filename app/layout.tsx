@@ -4,6 +4,7 @@ import "./globals.css"
 import Nav from "@/components/Nav"
 import { auth } from "@/lib/auth"
 import { cn } from "@/utils/tw"
+import NextTopLoader from "nextjs-toploader"
 
 const Noto = Noto_Sans_HK({ subsets: [] })
 
@@ -18,6 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body className={cn(Noto.className, "min-h-screen flex flex-col")}>
         <Nav session={session} />
+        <NextTopLoader showSpinner={false} color="#409EFF" />
         <div className="grow flex flex-col">{children}</div>
       </body>
     </html>

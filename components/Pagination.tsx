@@ -1,10 +1,11 @@
 "use client"
+import { usePRouter } from "@/utils/router"
 import { cn } from "@/utils/tw"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useHotkeys } from "react-hotkeys-hook"
 
 export default function Pagination({ q, count, perPage }) {
-  const router = useRouter()
+  const router = usePRouter()
   const { page } = q
   const pathname = usePathname()
   const totalPage = Math.ceil(count / perPage)

@@ -1,12 +1,11 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { usePRouter } from "@/utils/router"
 import { useEffect } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useLockBodyScroll } from "react-use"
 
 export default function Backdrop() {
-  const router = useRouter()
+  const router = usePRouter()
   function onClose() {
     router.back()
   }

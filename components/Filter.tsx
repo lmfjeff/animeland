@@ -1,12 +1,13 @@
 "use client"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { cn } from "@/utils/tw"
+import { usePRouter } from "@/utils/router"
 
 export default function Filter({ q, name, options, hasOrder = false }) {
   const currentValue = q[name]
   const currentOrder = q.order
   const pathname = usePathname()
-  const router = useRouter()
+  const router = usePRouter()
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <div>{name}</div>

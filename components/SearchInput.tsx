@@ -1,9 +1,9 @@
 "use client"
 import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePRouter } from "@/utils/router"
 
 export default function SearchInput() {
-  const router = useRouter()
+  const router = usePRouter()
   const [text, setText] = useState("")
   const inputRef = useRef<any>(null)
   function handleSearch() {

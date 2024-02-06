@@ -1,11 +1,12 @@
 "use client"
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePRouter } from "@/utils/router"
+import { usePathname, useSearchParams } from "next/navigation"
 
 export default function DebugButton() {
   const search = useSearchParams()
   const pathname = usePathname()
-  const router = useRouter()
+  const router = usePRouter()
   return (
     <img
       src="/debug.svg"
