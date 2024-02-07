@@ -9,8 +9,8 @@ import { newMediaToUpdateInput } from "./dto"
 
 const regex = unicode({ Script: ["Hiragana", "Katakana", "Han", "Latin"] }).toRegExp("g")
 
-export async function testJob() {
-  const yearList = range(2000, 2025)
+export async function wikiSyncJob(start, end) {
+  const yearList = range(start, end + 1)
   for (const year of yearList) {
     const url = `https://zh.wikipedia.org/zh-hk/${year}%E5%B9%B4%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8`
     const resp = await fetch(url)
@@ -88,4 +88,4 @@ export async function testJob() {
   }
 }
 
-testJob()
+wikiSyncJob(2000, 2024)
