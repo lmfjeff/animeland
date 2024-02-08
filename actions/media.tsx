@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 export async function search(q, page) {
   const perPage = 20
@@ -33,6 +34,39 @@ export async function findManyBySeason(year, season) {
   await prisma.media.findMany({
     where: {},
   })
+}
+
+export async function findMany(page) {
+  const perPage = 100
+  const media = prisma.media.findMany({
+    where: {
+      day_of_week: {
+        not: Prisma.DbNull,
+      },
+    },
+    orderBy: [{ year: "asc" }, { season: "asc" }, { created_at: "asc" }],
+    take: perPage,
+    skip: perPage * ((page || 1) - 1),
+  })
+  const count = prisma.media.count({
+    where: {
+      day_of_week: {
+        not: Prisma.DbNull,
+      },
+    },
+  })
+  return await prisma.$transaction([media, count])
+}
+
+export async function update(batch) {
+  for (const b of batch) {
+    const { id, titles } = b
+    await prisma.media.update({
+      where: { id },
+      data: { titles },
+    })
+  }
+  revalidatePath("/edit")
 }
 
 // todo integrate into page
