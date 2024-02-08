@@ -22,7 +22,9 @@ export async function wikiSyncJob(start, end) {
 
     const seasonList: any[] = []
     $('span[id*="月"]').each((i, el) => {
-      const jsonArray = tabletojson.convert("<table>" + $(el).parent().next().html()! + "</table>")
+      const jsonArray = tabletojson.convert("<table>" + $(el).parent().next().html()! + "</table>", {
+        stripHtmlFromCells: false,
+      })
       if (jsonArray[0]) seasonList.push(jsonArray[0])
     })
 
@@ -36,56 +38,57 @@ export async function wikiSyncJob(start, end) {
         .filter(row => row[jaTitleKey])
         .map(row => ({ ...row, text: row[jaTitleKey].match(regex)?.join("").toLowerCase() }))
         .filter(row => row.text)
+      await fs.writeFile(`tmp/test.json`, JSON.stringify(rawList, null, 2))
 
-      const dbMedia = await prisma.media.findMany({
-        where: {
-          year,
-          // season,
-          nsfw: false,
-          // day_of_week: {
-          //   not: Prisma.DbNull,
-          // },
-          // time: {
-          //   not: Prisma.DbNull,
-          // },
-          format: {
-            in: ["TV", "TV_SHORT", "ONA"],
-          },
-        },
-      })
+      // const dbMedia = await prisma.media.findMany({
+      //   where: {
+      //     year,
+      //     // season,
+      //     nsfw: false,
+      //     // day_of_week: {
+      //     //   not: Prisma.DbNull,
+      //     // },
+      //     // time: {
+      //     //   not: Prisma.DbNull,
+      //     // },
+      //     format: {
+      //       in: ["TV", "TV_SHORT", "ONA"],
+      //     },
+      //   },
+      // })
 
-      const oldList = dbMedia
-        .filter(media => media.titles?.ja)
-        .map(media => ({ ...media, text: media.titles?.ja.match(regex)?.join("").toLowerCase() }))
-        .filter(media => media.text)
+      // const oldList = dbMedia
+      //   .filter(media => media.titles?.ja)
+      //   .map(media => ({ ...media, text: media.titles?.ja.match(regex)?.join("").toLowerCase() }))
+      //   .filter(media => media.text)
 
-      for (const raw of rawList) {
-        const exactMatched = oldList.filter(media => media.text === raw.text)
-        const matched = oldList.filter(
-          media => media.text === raw.text || media.text.includes(raw.text) || raw.text.includes(media.text)
-        )
-        if (matched.length === 0) {
-          console.log(`no match for wiki: ${raw.text}`)
-          continue
-        }
-        if (matched.length > 1 && exactMatched.length > 1) {
-          console.log(`2+ match for wiki: ${raw.text}, db: ${matched[0].text}, ${matched[1].text}`)
-          continue
-        }
-        console.log(`wiki: ${raw.text} match db: ${matched[0].text}`)
-        const updateInput = newMediaToUpdateInput({ titles: { zh: raw[zhTitleKey] } }, exactMatched?.[0] || matched[0])
-        if (!updateInput) continue
-        await prisma.media.update({
-          where: {
-            id: exactMatched?.[0]?.id || matched[0].id,
-          },
-          data: updateInput,
-        })
-      }
+      // for (const raw of rawList) {
+      //   const exactMatched = oldList.filter(media => media.text === raw.text)
+      //   const matched = oldList.filter(
+      //     media => media.text === raw.text || media.text.includes(raw.text) || raw.text.includes(media.text)
+      //   )
+      //   if (matched.length === 0) {
+      //     console.log(`no match for wiki: ${raw.text}`)
+      //     continue
+      //   }
+      //   if (matched.length > 1 && exactMatched.length > 1) {
+      //     console.log(`2+ match for wiki: ${raw.text}, db: ${matched[0].text}, ${matched[1].text}`)
+      //     continue
+      //   }
+      //   console.log(`wiki: ${raw.text} match db: ${matched[0].text}`)
+      //   const updateInput = newMediaToUpdateInput({ titles: { zh: raw[zhTitleKey] } }, exactMatched?.[0] || matched[0])
+      //   if (!updateInput) continue
+      //   await prisma.media.update({
+      //     where: {
+      //       id: exactMatched?.[0]?.id || matched[0].id,
+      //     },
+      //     data: updateInput,
+      //   })
+      // }
 
       season++
     }
   }
 }
 
-wikiSyncJob(2000, 2024)
+wikiSyncJob(2024, 2024)

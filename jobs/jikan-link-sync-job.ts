@@ -3,13 +3,26 @@ import prisma from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
 import { OpenCC } from "opencc"
 
+async function checkExternalJson() {
+  const allExternals = JSON.parse(await fs.readFile("tmp/external.json", "utf8"))
+  const c = allExternals.map(a => a.data.filter(b => b.name === "Wikipedia")).filter(v => v.length > 1)
+  console.log("🚀 ~ jikanLinkSyncJob ~ c:", c.length)
+  return
+}
+
+async function fetchWiki() {
+  const d = JSON.parse(await fs.readFile("tmp/external.json", "utf8"))
+  for (const data of d) {
+  }
+}
+
 async function jikanLinkSyncJob(year, season) {
   const converter: OpenCC = new OpenCC("s2t.json")
   let count = 0
   const animes = await prisma.media.findMany({
     where: {
-      year,
-      season,
+      // year,
+      // season,
       day_of_week: {
         not: Prisma.DbNull,
       },
@@ -25,6 +38,10 @@ async function jikanLinkSyncJob(year, season) {
       method: "GET",
     })
     const data = await resp.json()
+
+    const d = JSON.parse(await fs.readFile("tmp/external.json", "utf8"))
+    d.push({ ...data, mal: malId })
+    await fs.writeFile("tmp/external.json", JSON.stringify(d, null, 2))
 
     const links = data.data.filter(link => link.name === "Wikipedia")
     if (links.length === 0) continue
