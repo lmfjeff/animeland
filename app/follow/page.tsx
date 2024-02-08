@@ -77,7 +77,7 @@ export default async function Follow({ searchParams }) {
             <Link href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
               {f.media.titles?.zh || f.media.titles?.ja}
             </Link>
-            <div>
+            <div className="whitespace-nowrap">
               {f.media.year}-{f.media.season}
             </div>
             <div className="min-w-[70px] max-w-[70px] overflow-clip">
