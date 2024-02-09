@@ -7,7 +7,7 @@ export default function CustomLink({
   ...props
 }: LinkProps & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
-    <Link {...props} className={cn(className, "active:opacity-50")}>
+    <Link {...props} prefetch={false} className={cn(className, "active:opacity-50")}>
       {children}
     </Link>
   )
