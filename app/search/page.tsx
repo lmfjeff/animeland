@@ -1,4 +1,5 @@
 import { search } from "@/actions/media"
+import CustomLink from "@/components/CustomLink"
 import Pagination from "@/components/Pagination"
 import Link from "next/link"
 
@@ -16,9 +17,9 @@ export default async function Search({ searchParams }) {
       <div className="flex flex-col divide-y">
         {animes.map(anime => (
           <div key={anime.id} className="py-1 gap-1 flex items-center">
-            <Link href={`/anime/${anime.id}`} className="line-clamp-1 grow">
+            <CustomLink href={`/anime/${anime.id}`} className="line-clamp-1 grow">
               {anime.titles?.zh || anime.titles?.ja || "??"}
-            </Link>
+            </CustomLink>
             <div>
               {anime.year}
               {anime.season ? `-${anime.season}` : ``}

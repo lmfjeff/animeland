@@ -3,6 +3,7 @@ import { SEASON_LIST } from "@/constants/media"
 import { usePRouter } from "@/utils/router"
 import { usePathname } from "next/navigation"
 import { useHotkeys } from "react-hotkeys-hook"
+import CustomButton from "./CustomButton"
 
 export default function SeasonPagination({ q }) {
   const router = usePRouter()
@@ -34,11 +35,15 @@ export default function SeasonPagination({ q }) {
   useHotkeys("right,d", handleRight)
   return (
     <div className="flex items-center">
-      <img src="/left.svg" className="size-8 cursor-pointer" onClick={handleLeft} />
+      <CustomButton>
+        <img src="/left.svg" className="size-8 cursor-pointer" onClick={handleLeft} />
+      </CustomButton>
       <div>
         {year} {SEASON_LIST[season - 1]}
       </div>
-      <img src="/right.svg" className="size-8 cursor-pointer" onClick={handleRight} />
+      <CustomButton>
+        <img src="/right.svg" className="size-8 cursor-pointer" onClick={handleRight} />
+      </CustomButton>
     </div>
   )
 }

@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation"
 import { cn } from "@/utils/tw"
 import { usePRouter } from "@/utils/router"
+import CustomButton from "./CustomButton"
 
 export default function Filter({ q, name, options, hasOrder = false }) {
   const currentValue = q[name]
@@ -12,7 +13,7 @@ export default function Filter({ q, name, options, hasOrder = false }) {
     <div className="flex items-center gap-2 flex-wrap">
       <div>{name}</div>
       {options.map(v => (
-        <button
+        <CustomButton
           key={v.value}
           className={cn("p-1 border border-black", {
             "bg-blue-500 text-white": v.value === currentValue,
@@ -37,7 +38,7 @@ export default function Filter({ q, name, options, hasOrder = false }) {
           }}
         >
           {v.text}
-        </button>
+        </CustomButton>
       ))}
       {hasOrder && <div>{currentOrder === "desc" ? "↓" : "↑"}</div>}
     </div>

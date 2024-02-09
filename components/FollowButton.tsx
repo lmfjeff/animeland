@@ -5,10 +5,11 @@ import { FloatingFocusManager, useClick, useDismiss, useFloating, useInteraction
 import { range } from "ramda"
 import { useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./Popover"
+import CustomButton from "./CustomButton"
 
 export function FollowButton({ animeId, isFollowed }) {
   return (
-    <button
+    <CustomButton
       onClick={() => {
         if (isFollowed) {
           unfollow(animeId)
@@ -19,7 +20,7 @@ export function FollowButton({ animeId, isFollowed }) {
       className="py-1 text-center border"
     >
       {isFollowed ? "unfollow" : "follow"}
-    </button>
+    </CustomButton>
   )
 }
 
@@ -32,7 +33,7 @@ export function RateButton({ animeId, score }) {
       </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid grid-cols-2">
         {range(0, 21).map(n => (
-          <button
+          <CustomButton
             key={n}
             className="py-1 border border-black"
             onClick={() => {
@@ -41,9 +42,9 @@ export function RateButton({ animeId, score }) {
             }}
           >
             {n / 2}
-          </button>
+          </CustomButton>
         ))}
-        <button
+        <CustomButton
           className="py-1 border border-black"
           onClick={() => {
             follow(animeId, null, undefined)
@@ -51,7 +52,7 @@ export function RateButton({ animeId, score }) {
           }}
         >
           X
-        </button>
+        </CustomButton>
       </PopoverContent>
     </Popover>
   )
@@ -66,7 +67,7 @@ export function StatusButton({ animeId, watchStatus }) {
       </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid">
         {FOLLOWLIST_WATCH_STATUS_OPTIONS.map(s => (
-          <button
+          <CustomButton
             key={s.value}
             className="py-1 border border-black"
             onClick={() => {
@@ -75,7 +76,7 @@ export function StatusButton({ animeId, watchStatus }) {
             }}
           >
             {s.text}
-          </button>
+          </CustomButton>
         ))}
       </PopoverContent>
     </Popover>

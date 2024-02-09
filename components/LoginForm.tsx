@@ -2,6 +2,7 @@
 import { createUser } from "@/actions/user"
 import { signIn, signOut } from "next-auth/react"
 import { useState } from "react"
+import CustomButton from "./CustomButton"
 
 export default function LoginForm({ session, setOpen }) {
   const [username, setUsername] = useState("")
@@ -10,9 +11,9 @@ export default function LoginForm({ session, setOpen }) {
     <div className="bg-white p-4 flex flex-col gap-2">
       {!session && (
         <>
-          <button className="border border-gray-500 p-1" onClick={() => signIn("google")}>
+          <CustomButton className="border border-gray-500 p-1" onClick={() => signIn("google")}>
             google login
-          </button>
+          </CustomButton>
           <input
             className="border border-gray-500 p-1"
             placeholder="username"
@@ -29,7 +30,7 @@ export default function LoginForm({ session, setOpen }) {
             onChange={e => setPassword(e.target.value)}
           />
           <div className="flex gap-2">
-            <button
+            <CustomButton
               className="w-full border border-gray-500 p-1"
               onClick={async () => {
                 await signIn("credentials", { username, password })
@@ -37,8 +38,8 @@ export default function LoginForm({ session, setOpen }) {
               }}
             >
               login
-            </button>
-            <button
+            </CustomButton>
+            <CustomButton
               className="w-full border border-gray-500 p-1"
               onClick={async () => {
                 await createUser(username, password)
@@ -47,7 +48,7 @@ export default function LoginForm({ session, setOpen }) {
               }}
             >
               register
-            </button>
+            </CustomButton>
           </div>
         </>
       )}
@@ -55,7 +56,7 @@ export default function LoginForm({ session, setOpen }) {
         <>
           <div>email: {session?.user?.email}</div>
           <div>username: {session?.user?.username}</div>
-          <button
+          <CustomButton
             className="border border-gray-500 p-1"
             onClick={async () => {
               await signOut()
@@ -63,7 +64,7 @@ export default function LoginForm({ session, setOpen }) {
             }}
           >
             log out
-          </button>
+          </CustomButton>
         </>
       )}
     </div>

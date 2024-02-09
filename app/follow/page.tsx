@@ -9,6 +9,7 @@ import Filter from "@/components/Filter"
 import { Prisma } from "@prisma/client"
 import { RateButton, StatusButton } from "@/components/FollowButton"
 import Pagination from "@/components/Pagination"
+import CustomLink from "@/components/CustomLink"
 
 export default async function Follow({ searchParams }) {
   const perPage = 100
@@ -74,9 +75,9 @@ export default async function Follow({ searchParams }) {
       <div className="flex flex-col divide-y">
         {follows.map(f => (
           <div key={f.media_id} className="flex items-center gap-1">
-            <Link href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
+            <CustomLink href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
               {f.media.titles?.zh || f.media.titles?.ja}
-            </Link>
+            </CustomLink>
             <div className="whitespace-nowrap">
               {f.media.year}-{f.media.season}
             </div>
