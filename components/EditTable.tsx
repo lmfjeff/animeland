@@ -2,6 +2,7 @@
 import { update } from "@/actions/media"
 import { cn } from "@/utils/tw"
 import { useFieldArray, useForm } from "react-hook-form"
+import AnimeRow from "./AnimeRow"
 
 export default function EditTable({ animes: OldAnimes }) {
   const { register, handleSubmit, formState, control, reset } = useForm({ defaultValues: { animes: OldAnimes } })
@@ -15,7 +16,12 @@ export default function EditTable({ animes: OldAnimes }) {
       onSubmit={handleSubmit(data => {
         const batch = data.animes.filter((d, index) => formState.dirtyFields?.animes?.[index]?.titles?.zh)
         if (batch.length > 0) {
-          update(batch)
+          update(
+            batch.map(b => {
+              const { id, titles, year, season } = b
+              return { id, titles, year, season }
+            })
+          )
         }
         reset(data)
       })}
@@ -24,8 +30,16 @@ export default function EditTable({ animes: OldAnimes }) {
       <input type="submit" className="border cursor-pointer mb-1" value="batch update" />
       {fields.map((f: any, index) => (
         <div key={f.id} className="flex items-center gap-1 mb-1">
-          <div className="w-[50px]">{f.id}</div>
-          <div className="w-[calc(50%-50px)] border whitespace-nowrap overflow-hidden">{f.titles?.ja}</div>
+          <AnimeRow anime={f}>
+            <div className="w-[50px] border text-center">detail</div>
+          </AnimeRow>
+          <a
+            href={`https://www.google.com/search?q=${f.titles?.ja}`}
+            target="_blank"
+            className="w-[calc(50%-50px)] border whitespace-nowrap overflow-hidden"
+          >
+            {f.titles?.ja}
+          </a>
           <input
             {...register(`animes.${index}.titles.zh`)}
             autoComplete="off"

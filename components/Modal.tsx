@@ -137,7 +137,7 @@ export const ModalContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTM
     return (
       <FloatingPortal>
         <FloatingOverlay className="flex items-center justify-center bg-[rgba(0,0,0,0.8)] z-fixed" lockScroll>
-          <FloatingFocusManager context={floatingContext}>
+          <FloatingFocusManager context={floatingContext} initialFocus={-1}>
             <div
               ref={ref}
               aria-labelledby={context.labelId}

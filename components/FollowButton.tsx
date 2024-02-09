@@ -28,7 +28,13 @@ export function RateButton({ animeId, score }) {
   const [open, setOpen] = useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
-      <PopoverTrigger onClick={() => setOpen(v => !v)} className="py-1 text-center border w-full">
+      <PopoverTrigger
+        onClick={e => {
+          e.stopPropagation()
+          setOpen(v => !v)
+        }}
+        className="py-1 text-center border w-full"
+      >
         {score?.toString() || "rate"}
       </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid grid-cols-2">
@@ -62,7 +68,13 @@ export function StatusButton({ animeId, watchStatus }) {
   const [open, setOpen] = useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen} placement="top">
-      <PopoverTrigger onClick={() => setOpen(v => !v)} className="py-1 text-center border w-full">
+      <PopoverTrigger
+        onClick={e => {
+          e.stopPropagation()
+          setOpen(v => !v)
+        }}
+        className="py-1 text-center border w-full"
+      >
         {FOLLOWLIST_WATCH_STATUS_OPTIONS.find(v => v.value === watchStatus)?.text || "status"}
       </PopoverTrigger>
       <PopoverContent className="bg-white border border-black w-1/3 grid">

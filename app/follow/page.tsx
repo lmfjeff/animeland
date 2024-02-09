@@ -1,15 +1,13 @@
 import React from "react"
 import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
-import Link from "next/link"
-import { cn } from "@/utils/tw"
 import FollowImport from "@/components/FollowImport"
 import { FOLLOWLIST_SORT_OPTIONS, FOLLOWLIST_WATCH_STATUS_OPTIONS, SEASON_LIST } from "@/constants/media"
 import Filter from "@/components/Filter"
 import { Prisma } from "@prisma/client"
-import { RateButton, StatusButton } from "@/components/FollowButton"
 import Pagination from "@/components/Pagination"
-import CustomLink from "@/components/CustomLink"
+import AnimeRow from "@/components/AnimeRow"
+import { RateButton, StatusButton } from "@/components/FollowButton"
 
 export default async function Follow({ searchParams }) {
   const perPage = 100
@@ -74,10 +72,8 @@ export default async function Follow({ searchParams }) {
       </div>
       <div className="flex flex-col divide-y">
         {follows.map(f => (
-          <div key={f.media_id} className="flex items-center gap-1">
-            <CustomLink href={`/anime/${f.media.id}`} className="line-clamp-1 grow">
-              {f.media.titles?.zh || f.media.titles?.ja}
-            </CustomLink>
+          <AnimeRow key={f.media_id} anime={f.media}>
+            <div className="line-clamp-1 grow">{f.media.titles?.zh || f.media.titles?.ja}</div>
             <div className="whitespace-nowrap">
               {f.media.year}-{f.media.season}
             </div>
@@ -87,7 +83,7 @@ export default async function Follow({ searchParams }) {
             <div className="min-w-[30px]">
               <RateButton animeId={f.media_id} score={f.score} />
             </div>
-          </div>
+          </AnimeRow>
         ))}
       </div>
     </div>

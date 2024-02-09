@@ -8,15 +8,11 @@ export default async function Edit({ searchParams }) {
     page: searchParams.page ? parseInt(searchParams.page) : 1,
   }
   const [animes, count] = await findMany(q.page)
-  const defaultAnimes = animes.map(a => {
-    const { id, titles, year, season } = a
-    return { id, titles, year, season }
-  })
 
   return (
     <div>
       <Pagination q={q} count={count} perPage={100} />
-      <EditTable animes={defaultAnimes} />
+      <EditTable key={JSON.stringify(searchParams)} animes={animes} />
     </div>
   )
 }
