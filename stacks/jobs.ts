@@ -41,6 +41,7 @@ export function Jobs({ stack, app }: StackContext) {
   const anilistSyncFunction = new Function(stack, "anilist-sync", {
     handler: "jobs/anilist-sync-lambda.handler",
     timeout: 900,
+    bind: [bus],
   })
 
   const jikanSyncFunction = new Function(stack, "jikan-sync", {
@@ -66,7 +67,7 @@ export function Jobs({ stack, app }: StackContext) {
         detailType: ["self-trigger"],
       },
       targets: {
-        jikanTarget: anilistSyncFunction,
+        anilistTarget: anilistSyncFunction,
       },
     },
     jikanRule: {

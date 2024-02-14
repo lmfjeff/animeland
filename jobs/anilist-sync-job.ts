@@ -7,6 +7,7 @@ export async function anilistSyncJob(startAt?: number) {
   let page = startAt || 1
   const globalStart = Date.now()
   while (true) {
+    let rawData
     try {
       const start = Date.now()
       const resp = await fetch("https://graphql.anilist.co", {
@@ -35,6 +36,7 @@ export async function anilistSyncJob(startAt?: number) {
       }
 
       // write to db
+      rawData = data
       const rawMediaList = data.data.Page.media
       for (const rawMedia of rawMediaList) {
         const newMedia = anilistObjToMediaDTO(rawMedia)
@@ -83,6 +85,7 @@ export async function anilistSyncJob(startAt?: number) {
       }
     } catch (e) {
       console.log("🚀 ~ file: test.ts:27 ~ test ~ e:", e)
+      console.log("rawData: ", JSON.stringify(rawData))
       return
     }
   }
