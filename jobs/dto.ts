@@ -1,16 +1,32 @@
 // import { Media } from "@prisma/client"
-import { equals, identity, mergeDeepRight, pick, pickBy } from "ramda"
+import { concat, equals, identity, mergeDeepRight, mergeDeepWith, pick, pickBy, uniqWith } from "ramda"
 import slugify from "slugify"
 import { anilistDateToString } from "@/jobs/utils"
 import { createMediaInputType, updateMediaInputType } from "@/types/prisma"
 import { SEASON_LIST } from "@/constants/media"
 
-export function newMediaToUpdateInput(newMedia, oldMedia) {
+export function newMediaToUpdateInput(newMedia, oldMedia, keepOld = false) {
   // todo deal with genres for newMedia
-  const diffKeys = Object.keys(newMedia).filter(key => !equals(newMedia[key], oldMedia[key]))
+  const keys = Object.keys(newMedia)
+  const merged = mergeDeepWith(
+    (a, b) => {
+      if (Array.isArray(a) && Array.isArray(b)) {
+        return uniqWith((x, y) => {
+          return equals(x, y)
+        })(concat(a, b))
+      }
+      if (keepOld) {
+        return a
+      }
+      return b
+    },
+    pick(keys, oldMedia),
+    pick(keys, newMedia)
+  )
+  const diffKeys = keys.filter(key => !equals(merged[key], oldMedia[key]))
   if (diffKeys.length < 1) return null
-  const merged = mergeDeepRight(pick(diffKeys, oldMedia), pick(diffKeys, newMedia))
-  return merged
+
+  return pick(merged, diffKeys)
 }
 
 export function anilistObjToMediaDTO(rawmedia) {

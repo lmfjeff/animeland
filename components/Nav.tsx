@@ -37,7 +37,7 @@ export default function Nav({ session }) {
         <CustomButton>
           <img
             src={session?.user?.image || "/user.svg"}
-            className={cn("size-8 mr-2", { "rounded-full": session?.user?.image })}
+            className={cn("min-w-8 size-8 mr-2", { "rounded-full": session?.user?.image })}
             onClick={() => setLoginModalOpen(!loginModalOpen)}
           />
         </CustomButton>
