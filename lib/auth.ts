@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "./prisma"
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "@/constants/env"
+import { compare } from "bcrypt"
 
 export const nextAuthOptions = {
   providers: [
@@ -18,7 +19,6 @@ export const nextAuthOptions = {
         username: { label: "username", type: "text" },
         password: { label: "password", type: "password" },
       },
-      // todo add bcrypt compare hash
       async authorize(credentials, req) {
         const user = await prisma.user.findUnique({
           where: {
@@ -26,6 +26,8 @@ export const nextAuthOptions = {
           },
         })
         if (!user) throw Error("no_this_user")
+        const isValid = user.password && (await compare(credentials?.password || "", user.password))
+        if (!isValid) throw new Error("wrong_pw")
         return user
       },
     }),

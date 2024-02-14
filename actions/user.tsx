@@ -1,16 +1,21 @@
 "use server"
 import prisma from "@/lib/prisma"
+import { hash } from "bcrypt"
 
-// todo hash pw
 export async function createUser(username, password) {
-  await prisma.user.upsert({
+  const existingUser = await prisma.user.findFirst({
     where: {
       username,
     },
-    create: {
+  })
+  if (existingUser) throw Error("用戶名已被其他人使用")
+
+  const hashedPw = await hash(password, 10)
+
+  await prisma.user.create({
+    data: {
       username,
-      password,
+      password: hashedPw,
     },
-    update: {},
   })
 }
