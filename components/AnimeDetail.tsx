@@ -76,7 +76,7 @@ export function AnimeDetail({ anime }) {
         {episodes && <div>episode: {episodes}</div>}
         <div className="flex items-center gap-1 flex-wrap">
           {anime.relations?.map(r => (
-            <a href={`/anime/${r.relation_source_id}`} className="border">
+            <a key={r.relation_source_id} href={`/anime/${r.relation_source_id}`} className="border">
               {r.relation_type}
             </a>
           ))}

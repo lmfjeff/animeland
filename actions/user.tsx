@@ -1,6 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma"
-import { hash } from "bcrypt"
+import { hash } from "bcryptjs"
 
 export async function createUser(username, password) {
   const existingUser = await prisma.user.findFirst({

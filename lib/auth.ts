@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "./prisma"
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "@/constants/env"
-import { compare } from "bcrypt"
+import { compare } from "bcryptjs"
 
 export const nextAuthOptions = {
   providers: [
