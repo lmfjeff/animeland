@@ -51,7 +51,9 @@ export default async function Follow({ searchParams }) {
       where,
       orderBy,
       include: {
-        media: true,
+        media: {
+          include: { relations: true },
+        },
       },
       take: perPage,
       skip: perPage * ((page || 1) - 1),

@@ -74,6 +74,13 @@ export function AnimeDetail({ anime }) {
           </div>
         )}
         {episodes && <div>episode: {episodes}</div>}
+        <div className="flex items-center gap-1 flex-wrap">
+          {anime.relations?.map(r => (
+            <a href={`/anime/${r.relation_source_id}`} className="border">
+              {r.relation_type}
+            </a>
+          ))}
+        </div>
         <div className="border p-2 [&_br]:hidden" dangerouslySetInnerHTML={{ __html: summary?.en || "" }}></div>
       </div>
       <div className="bg-blue-200 sticky bottom-0 grid grid-cols-3 border-t border-black">

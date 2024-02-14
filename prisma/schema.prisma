@@ -79,48 +79,61 @@ model VerificationToken {
 }
 
 model Media {
-  id             Int          @id @default(autoincrement())
+  id               Int          @id @default(autoincrement())
   /// [JsonType]
-  titles         Json
+  titles           Json
   /// [JsonType]
-  id_external    Json?
+  id_external      Json?
   /// [JsonType]
-  score_external Json?
+  score_external   Json?
   /// [JsonType]
-  summary        Json?
+  summary          Json?
   /// [JsonType]
-  day_of_week    Json?
+  day_of_week      Json?
   /// [JsonType]
-  time           Json?
+  time             Json?
   /// [JsonType]
-  start_date     Json?
+  start_date       Json?
   /// [JsonType]
-  end_date       Json?
+  end_date         Json?
   /// [JsonType]
-  images         Json[]       @default([])
+  images           Json[]       @default([])
   /// [JsonType]
-  external_links Json[]       @default([])
+  external_links   Json[]       @default([])
   /// [JsonType]
-  trailers       Json[]       @default([])
-  slug           String?
-  synonyms       String[]     @default([])
-  year           Int?
-  season         Int?
-  country        String?
-  source         String?
-  type           String?
-  format         String?
-  status         String?
-  episodes       Int?
-  nsfw           Boolean      @default(false)
-  studios        String[]     @default([])
-  genres         Genre[]
-  is_hiden       Boolean      @default(false)
-  created_at     DateTime     @default(now()) @db.Timestamptz()
-  updated_at     DateTime     @default(now()) @updatedAt @db.Timestamptz()
-  followlist     FollowList[]
+  trailers         Json[]       @default([])
+  slug             String?
+  synonyms         String[]     @default([])
+  year             Int?
+  season           Int?
+  country          String?
+  source           String?
+  type             String?
+  format           String?
+  status           String?
+  episodes         Int?
+  nsfw             Boolean      @default(false)
+  studios          String[]     @default([])
+  genres           Genre[]
+  is_hiden         Boolean      @default(false)
+  created_at       DateTime     @default(now()) @db.Timestamptz()
+  updated_at       DateTime     @default(now()) @updatedAt @db.Timestamptz()
+  followlist       FollowList[]
+  relations        Relation[]   @relation("relation_targets")
+  relation_sources Relation[]   @relation("relation_sources")
 
   @@map("media")
+}
+
+model Relation {
+  relation_targets   Media  @relation("relation_targets", fields: [relation_target_id], references: [id])
+  relation_target_id Int
+  relation_sources   Media  @relation("relation_sources", fields: [relation_source_id], references: [id])
+  relation_source_id Int
+  relation_type      String
+
+  @@id([relation_target_id, relation_source_id])
+  @@map("relations")
 }
 
 model Genre {

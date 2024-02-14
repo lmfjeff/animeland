@@ -14,6 +14,7 @@ export default async function Anime({ params }) {
       where: {
         id,
       },
+      include: { relations: true },
     })
     if (session) {
       const follows = await prisma.followList.findFirst({

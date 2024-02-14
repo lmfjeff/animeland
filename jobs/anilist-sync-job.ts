@@ -40,6 +40,7 @@ export async function anilistSyncJob(startAt?: number) {
       const rawMediaList = data.data.Page.media
       for (const rawMedia of rawMediaList) {
         const newMedia = anilistObjToMediaDTO(rawMedia)
+        const relations = rawMedia.relations
         const found = await prisma.media.findMany({
           where: {
             id_external: {
@@ -58,6 +59,42 @@ export async function anilistSyncJob(startAt?: number) {
             },
             data: updateInput,
           })
+
+          // create relations
+          if (relations && relations.nodes.length > 0) {
+            const rawRelations = relations.nodes.map((n, index) => ({
+              relation_type: relations.edges[index].relationType,
+              relation_source_id_anilist: n.id,
+            }))
+            for (const r of rawRelations) {
+              const targets = await prisma.media.findMany({
+                where: {
+                  id_external: {
+                    path: ["anilist"],
+                    equals: r.relation_source_id_anilist,
+                  },
+                },
+              })
+              if (targets.length > 0) {
+                await prisma.relation.upsert({
+                  where: {
+                    relation_target_id_relation_source_id: {
+                      relation_source_id: targets[0].id,
+                      relation_target_id: oldMedia.id,
+                    },
+                  },
+                  create: {
+                    relation_type: r.relation_type,
+                    relation_source_id: targets[0].id,
+                    relation_target_id: oldMedia.id,
+                  },
+                  update: {
+                    relation_type: r.relation_type,
+                  },
+                })
+              }
+            }
+          }
         } else {
           await prisma.media.create({
             data: newMedia as createMediaInputType,

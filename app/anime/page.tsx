@@ -47,6 +47,7 @@ export default async function Animes({ params, searchParams }) {
     // todo also include current airing past animes
     let animes = await prisma.media.findMany({
       where: mediaWhere,
+      include: { relations: true },
     })
     if (session) {
       const follows = await prisma.followList.findMany({
