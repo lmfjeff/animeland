@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
-// todo add change follow status
 export async function follow(media_id, score?: any, watch_status?: any) {
   const session = await auth()
   const user_id = session?.user?.id

@@ -12,11 +12,11 @@ export const FOLLOWLIST_WATCH_STATUS_OPTIONS = [
 
 // todo use icon instead
 export const WATCH_STATUS_COLOR: Record<string, string> = {
-  plan_to_watch: "#909399",
-  watching: "#67C23A",
-  dropped: "#F56C6C",
-  completed: "#409EFF",
-  on_hold: "#E6A23C",
+  plan_to_watch: "#FBE7C6",
+  watching: "#B4F8C8",
+  dropped: "#868B8E",
+  completed: "#A0E7E5",
+  on_hold: "#FFAEBC",
 }
 
 export const FOLLOW_OPTIONS = [

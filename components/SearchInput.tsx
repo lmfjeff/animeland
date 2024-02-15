@@ -11,6 +11,7 @@ export default function SearchInput() {
     const url = `/search?q=${encodeURIComponent(text)}`
     router.push(url)
     inputRef?.current?.blur()
+    setText("")
   }
   return (
     <div className="relative">

@@ -10,7 +10,6 @@ export default async function Search({ searchParams }) {
     q: searchParams.q ? searchParams.q : "",
   }
   const { page, q } = p
-  // todo include relaitons also
   const [animes, count]: any = await search(q, page)
 
   return (

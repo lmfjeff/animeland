@@ -24,7 +24,7 @@ export default function AnimeCard({ anime, q }) {
         ) : (
           <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
         )}
-        <div>
+        <div style={{ background: statusColor }}>
           <div className="text-sm line-clamp-1">{anime.titles?.zh || anime.titles?.ja || "??"}</div>
           <div className="text-xs line-clamp-1 whitespace-pre-wrap flex items-center justify-between">
             <div>
@@ -32,10 +32,7 @@ export default function AnimeCard({ anime, q }) {
               {sort === "mal-score" && `${anime?.score_external?.mal || "\n"}`}
               {sort === "anilist-score" && `${anime?.score_external?.anilist || "\n"}`}
             </div>
-            <div className="flex items-center gap-1">
-              <div>{anime.score || " "}</div>
-              <div className={cn("size-2 rounded-full mr-1")} style={{ background: statusColor }} />
-            </div>
+            {anime.score && <div className="mr-1">{anime.score || " "}</div>}
           </div>
         </div>
       </div>
