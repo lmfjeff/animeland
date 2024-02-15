@@ -91,7 +91,8 @@ export async function wikiSyncJob(start, end) {
         console.log(`wiki: ${raw.text} match db: ${matched[0].text}`)
         const updateInput = newMediaToUpdateInput(
           { titles: { zh: raw.zhText }, external_links: [{ url: raw.link, site: "Wikipedia" }] },
-          exactMatched?.[0] || matched[0]
+          exactMatched?.[0] || matched[0],
+          true
         )
         if (!updateInput) continue
         await prisma.media.update({
@@ -106,4 +107,4 @@ export async function wikiSyncJob(start, end) {
   }
 }
 
-wikiSyncJob(2000, 2025)
+wikiSyncJob(2000, 2024)

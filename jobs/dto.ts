@@ -5,7 +5,7 @@ import { anilistDateToString } from "@/jobs/utils"
 import { createMediaInputType, updateMediaInputType } from "@/types/prisma"
 import { SEASON_LIST } from "@/constants/media"
 
-export function newMediaToUpdateInput(newMedia, oldMedia, keepOld = false) {
+export function newMediaToUpdateInput(newMedia, oldMedia, isReplace = false) {
   // todo deal with genres for newMedia
   const keys = Object.keys(newMedia)
   const merged = mergeDeepWith(
@@ -13,20 +13,21 @@ export function newMediaToUpdateInput(newMedia, oldMedia, keepOld = false) {
       if (Array.isArray(a) && Array.isArray(b)) {
         return uniqWith((x, y) => {
           return equals(x, y)
-        })(concat(a, b))
+        })(concat(b, a))
       }
-      if (keepOld) {
+      if (isReplace) {
         return a
       }
       return b
     },
-    pick(keys, oldMedia),
-    pick(keys, newMedia)
+    pick(keys, newMedia),
+    pick(keys, oldMedia)
   )
   const diffKeys = keys.filter(key => !equals(merged[key], oldMedia[key]))
   if (diffKeys.length < 1) return null
 
-  return pick(merged, diffKeys)
+  const input = pick(diffKeys, merged)
+  return input
 }
 
 export function anilistObjToMediaDTO(rawmedia) {
