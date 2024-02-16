@@ -34,11 +34,11 @@ export default function EditTable({ animes: OldAnimes }) {
             <div className="w-[50px] border text-center">detail</div>
           </AnimeRow>
           <a
-            href={`https://www.google.com/search?q=${f.titles?.ja}`}
+            href={`https://www.google.com/search?q=${f.titles?.ja || ""}`}
             target="_blank"
             className="w-[calc(50%-50px)] border whitespace-nowrap overflow-hidden"
           >
-            {f.titles?.ja}
+            {f.titles?.ja || "??"}
           </a>
           <input
             {...register(`animes.${index}.titles.zh`)}

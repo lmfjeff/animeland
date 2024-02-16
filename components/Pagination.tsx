@@ -69,7 +69,7 @@ export default function Pagination({ q, count, perPage }) {
           <PopoverContent
             className={cn(
               "bg-white border border-black divide-y divide-black grid",
-              "w-[100px] h-[300px] overflow-auto scrollbar-hide"
+              "w-[100px] max-h-[300px] overflow-auto scrollbar-hide"
             )}
           >
             {range(1, totalPage + 1).map(n => (
