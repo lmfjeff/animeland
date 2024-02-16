@@ -13,6 +13,7 @@ const wikiBaseUrl = "https://zh.wikipedia.org/zh-hk"
 export async function wikiSyncJob(start, end) {
   const yearList = range(start, end + 1)
   for (const year of yearList) {
+    console.log("🚀 ~ wikiSyncJob ~ year:", year)
     const url = `${wikiBaseUrl}/${year}%E5%B9%B4%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8`
     const resp = await fetch(url)
     const html = await resp.text()
@@ -71,26 +72,35 @@ export async function wikiSyncJob(start, end) {
 
     const oldList = dbMedia
       .filter(media => media.titles?.ja)
-      .map(media => ({ ...media, jaText: media.titles?.ja.match(regex)?.join("").toLowerCase() }))
+      .map(media => ({
+        ...media,
+        jaText: media.titles?.ja.match(regex)?.join("").toLowerCase(),
+        enText: media.titles?.en_jp.match(regex)?.join("").toLowerCase(),
+      }))
       .filter(media => media.jaText)
 
     for (const old of oldList) {
-      const exactMatched = rawList.filter(media => media.jaText === old.jaText)
-      const matched = rawList.filter(
+      const seasonRawList = rawList.filter(media => media.season === old.season)
+      const exactMatched = seasonRawList.filter(media => media.jaText === old.jaText)
+      const matched = seasonRawList.filter(
         media => media.jaText === old.jaText || media.jaText.includes(old.jaText) || old.jaText.includes(media.jaText)
       )
-      if (matched.length === 0) {
+      const matchedEn = seasonRawList.filter(media => media.jaText && media.jaText === old.enText)
+      if (matched.length === 0 && matchedEn.length === 0) {
         console.log(`no match for wiki: ${old.jaText}`)
         continue
       }
-      if (matched.length > 1 && exactMatched.length > 1) {
-        console.log(`2+ match for wiki: ${old.jaText}, db: ${matched[0].jaText}, ${matched[1].jaText}`)
+      if (exactMatched.length > 1) {
+        console.log(`2+ exact match for wiki: ${old.jaText}, db: ${exactMatched[0].zhText}, ${exactMatched[1].zhText}`)
         continue
       }
-      console.log(`wiki: ${old.jaText} match db: ${matched[0].jaText}`)
-      const m = exactMatched?.[0] || matched[0]
+      const finalMatched = exactMatched?.[0] || matched?.[0] || matchedEn?.[0]
+      console.log(`wiki: ${old.jaText} match db: ${finalMatched.jaText}`)
       const updateInput = newMediaToUpdateInput(
-        { titles: { zh: m.zhText }, external_links: m.link ? [{ url: m.link, site: "Wikipedia" }] : [] },
+        {
+          titles: { zh: finalMatched.zhText },
+          external_links: finalMatched.link ? [{ url: finalMatched.link, site: "Wikipedia" }] : [],
+        },
         old,
         true
       )
