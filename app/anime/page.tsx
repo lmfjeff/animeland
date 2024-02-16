@@ -91,7 +91,7 @@ export default async function Animes({ params, searchParams }) {
     <div className="p-2">
       {/* <div>{gethkNow().format("MM-DD HH:mm:ss")}</div> */}
       <div className="flex items-center flex-wrap gap-y-1 gap-x-3 mb-2">
-        <SeasonPagination q={q} />
+        <SeasonPagination q={q} nowYear={nowYear} nowSeason={nowSeason} />
         {session && <Filter q={q} name="follow" options={FOLLOW_OPTIONS} />}
         <Filter q={q} name="sort" options={SORT_OPTIONS} />
       </div>

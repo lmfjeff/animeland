@@ -62,7 +62,7 @@ export default function Pagination({ q, count, perPage }) {
           )}
           onClick={handleLeft}
         />
-        <Popover open={open} onOpenChange={setOpen} placement="top">
+        <Popover open={open} onOpenChange={setOpen} placement="bottom">
           <PopoverTrigger onClick={() => setOpen(v => !v)} className="text-center">
             page: {page}/{totalPage}
           </PopoverTrigger>
