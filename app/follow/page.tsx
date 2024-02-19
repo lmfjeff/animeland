@@ -17,7 +17,7 @@ export default async function Follow({ searchParams }) {
     order: searchParams.order ? searchParams.order : "desc",
     sort: searchParams.sort ? searchParams.sort : "updated_at",
   }
-  const { page, sort, order, watch_status } = q
+  const { page, sort, order, watch_status, format } = q
   const session = await auth()
 
   if (!session) return <div className="text-center">please login</div>
@@ -46,6 +46,11 @@ export default async function Follow({ searchParams }) {
     const where = {
       user_id: session?.user?.id,
       watch_status,
+      media: {
+        format: {
+          in: format ? [format.toUpperCase()] : ["TV", "TV_SHORT", "ONA"],
+        },
+      },
     }
     const findMany = prisma.followList.findMany({
       where,

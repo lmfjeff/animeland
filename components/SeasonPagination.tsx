@@ -66,7 +66,7 @@ export default function SeasonPagination({ q, nowYear, nowSeason }) {
         <PopoverContent
           className={cn(
             "bg-white border border-black divide-y divide-black grid",
-            "w-[120px] h-[300px] overflow-auto scrollbar-hide"
+            "w-[120px] max-h-[300px] overflow-auto scrollbar-hide"
           )}
         >
           {range(2000, nowYear + 1).map(yr =>

@@ -10,6 +10,7 @@ import { usePathname, useSearchParams } from "next/navigation"
 import NProgress from "nprogress"
 import CustomLink from "./CustomLink"
 import CustomButton from "./CustomButton"
+import ExtraPageButton from "./ExtraPageButton"
 
 export default function Nav({ session }) {
   const [loginModalOpen, setLoginModalOpen] = useState(false)
@@ -27,9 +28,7 @@ export default function Nav({ session }) {
       </CustomLink>
       <div className="flex gap-4 items-center">
         <SearchInput />
-        <CustomLink href="/edit">
-          <img src="/user-ninja.svg" className="size-8 min-w-8" />
-        </CustomLink>
+        <ExtraPageButton />
         <DebugButton />
         <CustomLink href="/follow">
           <img src="/heart.svg" className="size-8 min-w-8" />
