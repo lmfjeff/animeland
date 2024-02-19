@@ -6,12 +6,15 @@ import fs from "fs/promises"
 import { tabletojson } from "tabletojson"
 import unicode from "unicode-regex"
 import { newMediaToUpdateInput } from "./dto"
+import { pastSeasons } from "@/utils/date"
 
 const regex = unicode({ Script: ["Hiragana", "Katakana", "Han", "Latin"] }).toRegExp("g")
 const wikiBaseUrl = "https://zh.wikipedia.org/zh-hk"
 
 export async function wikiSyncJob(start, end) {
   const yearList = range(start, end + 1)
+
+  const rawList: any[] = []
   for (const year of yearList) {
     console.log("🚀 ~ wikiSyncJob ~ year:", year)
     const url = `${wikiBaseUrl}/${year}%E5%B9%B4%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8`
@@ -39,20 +42,22 @@ export async function wikiSyncJob(start, end) {
       }
     })
 
-    const rawList = allRowList
-      .map(row => {
-        const zhDom = cheerio.load(row.zh)
-        const jaDom = cheerio.load(row.ja)
-        zhDom(".reference").remove()
-        jaDom(".reference").remove()
-        const jaText = jaDom.text().match(regex)?.join("").toLowerCase()
-        const zhText = zhDom.text()
-        const relativeLink = zhDom("a").attr()?.href
-        const link = relativeLink ? wikiBaseUrl + relativeLink.replace("/wiki", "") : null
+    rawList.push(
+      ...allRowList
+        .map(row => {
+          const zhDom = cheerio.load(row.zh)
+          const jaDom = cheerio.load(row.ja)
+          zhDom(".reference").remove()
+          jaDom(".reference").remove()
+          const jaText = jaDom.text().match(regex)?.join("").toLowerCase()
+          const zhText = zhDom.text()
+          const relativeLink = zhDom("a").attr()?.href
+          const link = relativeLink ? wikiBaseUrl + relativeLink.replace("/wiki", "") : null
 
-        return { ...row, jaText, zhText, link }
-      })
-      .filter(row => row.jaText && row.zhText)
+          return { ...row, jaText, zhText, link }
+        })
+        .filter(row => row.jaText && row.zhText)
+    )
 
     const dbMedia = await prisma.media.findMany({
       where: {
@@ -80,7 +85,11 @@ export async function wikiSyncJob(start, end) {
       .filter(media => media.jaText)
 
     for (const old of oldList) {
-      const seasonRawList = rawList.filter(media => media.season === old.season)
+      const acceptedSeasonArray = [
+        `${old.year}-${old.season}`,
+        pastSeasons(old.year!, old.season!, 1).map(({ year, season }) => `${year}-${season}`)[0],
+      ]
+      const seasonRawList = rawList.filter(media => acceptedSeasonArray.includes(`${year}-${media.season}`))
       const exactMatched = seasonRawList.filter(media => media.jaText === old.jaText)
       const matched = seasonRawList.filter(
         media => media.jaText === old.jaText || media.jaText.includes(old.jaText) || old.jaText.includes(media.jaText)

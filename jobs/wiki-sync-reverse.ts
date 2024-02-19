@@ -19,6 +19,7 @@ async function wikiSyncReverse() {
         external_links: media.external_links.filter(v => v.url !== null && !v.url.includes("zh.wiki")),
       },
     })
+    console.log(`removed: ${zh}`)
   }
 }
 wikiSyncReverse()
