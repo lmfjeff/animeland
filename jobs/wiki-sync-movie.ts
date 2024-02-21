@@ -11,9 +11,7 @@ import { pastSeasons } from "@/utils/date"
 const regex = unicode({ Script: ["Hiragana", "Katakana", "Han", "Latin"] }).toRegExp("g")
 const wikiBaseUrl = "https://zh.wikipedia.org/zh-hk"
 
-export async function wikiSyncJob() {
-  const start = 2000
-  const end = new Date().getFullYear()
+export async function wikiSyncMovie(start, end) {
   const yearList = range(start, end + 1)
 
   const rawList: any[] = []
@@ -26,11 +24,12 @@ export async function wikiSyncJob() {
     $(".noprint").remove()
 
     const allRowList: any[] = []
-    $('span[id*="月"]').each((i, el) => {
-      const jsonArray = tabletojson.convert("<table>" + $(el).parent().nextAll("table").first().html()! + "</table>", {
+    $('span[id*="電影"]').each((i, el) => {
+      const jsonArray = tabletojson.convert("<table>" + $(el).parent().next().html()! + "</table>", {
         stripHtmlFromCells: false,
       })
       if (jsonArray[0]) {
+        jsonArray[0][0]
         const zhTitleKey = Object.keys(jsonArray[0][0])[1]
         const jaTitleKey = Object.keys(jsonArray[0][0])[2]
         allRowList.push(
@@ -64,15 +63,9 @@ export async function wikiSyncJob() {
       where: {
         year,
         // season,
-        day_of_week: {
-          not: Prisma.DbNull,
+        format: {
+          in: ["MOVIE"],
         },
-        // time: {
-        //   not: Prisma.DbNull,
-        // },
-        // format: {
-        //   in: ["TV", "TV_SHORT", "ONA"],
-        // },
       },
     })
 
@@ -86,11 +79,7 @@ export async function wikiSyncJob() {
       .filter(media => media.jaText)
 
     for (const old of oldList) {
-      const acceptedSeasonArray = [
-        `${old.year}-${old.season}`,
-        pastSeasons(old.year!, old.season!, 1).map(({ year, season }) => `${year}-${season}`)[0],
-      ]
-      const seasonRawList = rawList.filter(media => acceptedSeasonArray.includes(`${media.year}-${media.season}`))
+      const seasonRawList = rawList.filter(media => media.year === old.year)
       const exactMatched = seasonRawList.filter(media => media.jaText === old.jaText)
       const matched = seasonRawList.filter(
         media => media.jaText === old.jaText || media.jaText.includes(old.jaText) || old.jaText.includes(media.jaText)
@@ -125,4 +114,4 @@ export async function wikiSyncJob() {
   }
 }
 
-wikiSyncJob()
+wikiSyncMovie(2000, 2024)
