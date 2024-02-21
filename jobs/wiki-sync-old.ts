@@ -11,24 +11,20 @@ import { pastSeasons } from "@/utils/date"
 const regex = unicode({ Script: ["Hiragana", "Katakana", "Han", "Latin"] }).toRegExp("g")
 const wikiBaseUrl = "https://zh.wikipedia.org/zh-hk"
 
-export async function wikiSyncJob() {
-  const start = 2000
-  const end = new Date().getFullYear()
-  const yearList = range(start, end + 1)
-
+export async function wikiSyncOld() {
   const rawList: any[] = []
-  for (const year of yearList) {
+
+  for (const year of [1960, 1970, 1980, 1990]) {
     console.log("🚀 ~ wikiSyncJob ~ year:", year)
-    const url = `${wikiBaseUrl}/${year}%E5%B9%B4%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8`
+    const url = `${wikiBaseUrl}/${year}%E5%B9%B4%E4%BB%A3%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8`
     const resp = await fetch(url)
     const html = await resp.text()
-    // await fs.writeFile(`tmp/wiki-${year}.html`, html)
-    // const html = await fs.readFile(`tmp/wiki-${year}.html`, "utf8")
+    await fs.writeFile(`tmp/wiki-${year}.html`, html)
     const $ = cheerio.load(html)
     $(".noprint").remove()
 
     const allRowList: any[] = []
-    $('span[id*="月"]').each((i, el) => {
+    $('span[id*="年"]').each((i, el) => {
       const jsonArray = tabletojson.convert("<table>" + $(el).parent().nextAll("table").first().html()! + "</table>", {
         stripHtmlFromCells: false,
       })
@@ -38,7 +34,11 @@ export async function wikiSyncJob() {
         allRowList.push(
           ...jsonArray[0]
             .filter(row => row[zhTitleKey] && row[jaTitleKey])
-            .map(row => ({ season: i + 1, zh: row[zhTitleKey], ja: row[jaTitleKey] }))
+            .map(row => ({
+              year: parseInt($(el).text().match(/\d+/)?.[0] || ""),
+              zh: row[zhTitleKey],
+              ja: row[jaTitleKey],
+            }))
         )
       }
     })
@@ -61,7 +61,7 @@ export async function wikiSyncJob() {
     )
   }
 
-  for (const year of yearList) {
+  for (const year of range(1958, 2000)) {
     const dbMedia = await prisma.media.findMany({
       where: {
         year,
@@ -69,11 +69,8 @@ export async function wikiSyncJob() {
         day_of_week: {
           not: Prisma.DbNull,
         },
-        // time: {
-        //   not: Prisma.DbNull,
-        // },
         // format: {
-        //   in: ["TV", "TV_SHORT", "ONA"],
+        //   in: ["MOVIE"],
         // },
       },
     })
@@ -88,11 +85,7 @@ export async function wikiSyncJob() {
       .filter(media => media.jaText)
 
     for (const old of oldList) {
-      const acceptedSeasonArray = [
-        `${old.year}-${old.season}`,
-        pastSeasons(old.year!, old.season!, 1).map(({ year, season }) => `${year}-${season}`)[0],
-      ]
-      const seasonRawList = rawList.filter(media => acceptedSeasonArray.includes(`${year}-${media.season}`))
+      const seasonRawList = rawList.filter(media => media.year === year)
       const exactMatched = seasonRawList.filter(media => media.jaText === old.jaText)
       const matched = seasonRawList.filter(
         media => media.jaText === old.jaText || media.jaText.includes(old.jaText) || old.jaText.includes(media.jaText)
@@ -127,4 +120,4 @@ export async function wikiSyncJob() {
   }
 }
 
-wikiSyncJob()
+wikiSyncOld()
