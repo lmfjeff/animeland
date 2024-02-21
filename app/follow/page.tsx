@@ -70,10 +70,10 @@ export default async function Follow({ searchParams }) {
   }
   const [follows, count] = await fetchFollow()
   return (
-    <div className="p-2 flex flex-col gap-2 grow">
+    <div className="p-2 flex flex-col grow">
       <FollowImport />
       <Pagination q={q} count={count} perPage={perPage} />
-      <div className="flex p-1 gap-2 flex-wrap">
+      <div className="flex p-1 gap-1 flex-wrap">
         <Filter q={q} name="sort" options={FOLLOWLIST_SORT_OPTIONS} hasOrder />
         <Filter q={q} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
       </div>

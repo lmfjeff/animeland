@@ -10,7 +10,7 @@ export default function Filter({ q, name, options, hasOrder = false }) {
   const pathname = usePathname()
   const router = usePRouter()
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-1 flex-wrap">
       <div>{name}</div>
       {options.map(v => (
         <CustomButton

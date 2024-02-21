@@ -10,7 +10,7 @@ export default async function Edit({ searchParams }) {
   const [animes, count] = await findMany(q.page)
 
   return (
-    <div>
+    <div className="flex flex-col gap-1">
       <Pagination q={q} count={count} perPage={100} />
       <EditTable key={JSON.stringify(searchParams)} animes={animes} />
     </div>

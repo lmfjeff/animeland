@@ -2,18 +2,18 @@
 import { usePRouter } from "@/utils/router"
 import { cn } from "@/utils/tw"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
-import { Popover, PopoverContent, PopoverTrigger } from "./Popover"
 import { useHotkeys } from "react-hotkeys-hook"
 import { range } from "ramda"
 import CustomButton from "./CustomButton"
+import Select from "react-select"
 
 export default function Pagination({ q, count, perPage }) {
-  const [open, setOpen] = useState(false)
   const router = usePRouter()
   const { page } = q
   const pathname = usePathname()
   const totalPage = Math.ceil(count / perPage)
+  const options = range(1, totalPage + 1).map(v => ({ value: v, label: v }))
+  const defaultValue = options[options.findIndex(o => o.value === page)]
 
   function handleJump(page) {
     router.push(
@@ -62,30 +62,24 @@ export default function Pagination({ q, count, perPage }) {
           )}
           onClick={handleLeft}
         />
-        <Popover open={open} onOpenChange={setOpen} placement="bottom">
-          <PopoverTrigger onClick={() => setOpen(v => !v)} className="text-center">
-            page: {page}/{totalPage}
-          </PopoverTrigger>
-          <PopoverContent
-            className={cn(
-              "bg-white border border-black divide-y divide-black grid",
-              "w-[100px] max-h-[300px] overflow-auto scrollbar-hide"
-            )}
-          >
-            {range(1, totalPage + 1).map(n => (
-              <CustomButton
-                key={n}
-                className="py-[2px] hover:bg-blue-100"
-                onClick={() => {
-                  handleJump(n)
-                  setOpen(false)
-                }}
-              >
-                {n}
-              </CustomButton>
-            ))}
-          </PopoverContent>
-        </Popover>
+        <Select
+          key={page}
+          defaultValue={defaultValue}
+          options={options}
+          onChange={v => handleJump(v?.value)}
+          instanceId={"page-select"}
+          className="w-[70px]"
+          isSearchable={false}
+          components={{ IndicatorSeparator: () => <></> }}
+          styles={{
+            dropdownIndicator(base, props) {
+              return { ...base, paddingLeft: 0 }
+            },
+            valueContainer(base, props) {
+              return { ...base, paddingRight: 0 }
+            },
+          }}
+        />
         <div
           className={cn(
             "size-8 cursor-pointer bg-black",
