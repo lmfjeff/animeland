@@ -11,6 +11,7 @@ import NProgress from "nprogress"
 import CustomLink from "./CustomLink"
 import CustomButton from "./CustomButton"
 import ExtraPageButton from "./ExtraPageButton"
+import UserDetail from "./UserDetail"
 
 export default function Nav({ session }) {
   const [loginModalOpen, setLoginModalOpen] = useState(false)
@@ -42,8 +43,12 @@ export default function Nav({ session }) {
         </CustomButton>
       </div>
       <Modal open={loginModalOpen} onOpenChange={setLoginModalOpen}>
-        <ModalContent>
-          <LoginForm session={session} setOpen={setLoginModalOpen} />
+        <ModalContent className="bg-white w-full max-w-[300px] max-h-1/2 p-4">
+          {session ? (
+            <UserDetail session={session} setOpen={setLoginModalOpen} />
+          ) : (
+            <LoginForm setOpen={setLoginModalOpen} />
+          )}
         </ModalContent>
       </Modal>
     </div>
