@@ -51,7 +51,7 @@ export async function anilistSyncJob(startAt?: number) {
         })
         if (found.length > 0) {
           const oldMedia = found?.[0]
-          const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
+          const updateInput = newMediaToUpdateInput(newMedia, oldMedia, true)
           if (!updateInput) continue
           await prisma.media.update({
             where: {

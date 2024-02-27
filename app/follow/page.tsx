@@ -28,12 +28,17 @@ export default async function Follow({ searchParams }) {
     if (sort === "year") {
       orderBy = [{ media: { year: order } }, { media: { season: order } }, { media: { created_at: order } }]
     } else if (sort === "score") {
-      orderBy = {
-        score: {
-          sort: order,
-          nulls: "last",
+      orderBy = [
+        {
+          score: {
+            sort: order,
+            nulls: "last",
+          },
         },
-      }
+        { media: { year: order } },
+        { media: { season: order } },
+        { media: { created_at: order } },
+      ]
     } else if (sort === "created_at") {
       orderBy = {
         created_at: order,
@@ -68,7 +73,15 @@ export default async function Follow({ searchParams }) {
     })
     return await prisma.$transaction([findMany, count])
   }
-  const [follows, count] = await fetchFollow()
+  let [follows, count] = await fetchFollow()
+  follows = follows.map(f => ({
+    ...f,
+    media: {
+      ...f.media,
+      watch_status: f.watch_status,
+      score: f.score,
+    },
+  })) as any
   return (
     <div className="p-2 flex flex-col grow">
       <FollowImport />
