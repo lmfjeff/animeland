@@ -15,6 +15,7 @@ export async function wikiSyncJob() {
   const start = 2000
   const end = new Date().getFullYear()
   const yearList = range(start, end + 1)
+  let count = 0
 
   const rawList: any[] = []
   for (const year of yearList) {
@@ -97,15 +98,14 @@ export async function wikiSyncJob() {
       )
       const matchedEn = seasonRawList.filter(media => media.jaText && media.jaText === old.enText)
       if (matched.length === 0 && matchedEn.length === 0) {
-        console.log(`no match for wiki: ${old.jaText}`)
+        // console.log(`no match for wiki: ${old.jaText}`)
         continue
       }
       if (exactMatched.length > 1) {
-        console.log(`2+ exact match for wiki: ${old.jaText}, db: ${exactMatched[0].zhText}, ${exactMatched[1].zhText}`)
+        // console.log(`2+ exact match for wiki: ${old.jaText}, db: ${exactMatched[0].zhText}, ${exactMatched[1].zhText}`)
         continue
       }
       const finalMatched = exactMatched?.[0] || matched?.[0] || matchedEn?.[0]
-      console.log(`wiki: ${old.jaText} match db: ${finalMatched.jaText}`)
       const updateInput = newMediaToUpdateInput(
         {
           titles: { zh: finalMatched.zhText },
@@ -115,6 +115,7 @@ export async function wikiSyncJob() {
         true
       )
       if (!updateInput) continue
+      console.log(`${++count} wiki: ${old.jaText} match db: ${finalMatched.jaText}`)
       await prisma.media.update({
         where: {
           id: old.id,

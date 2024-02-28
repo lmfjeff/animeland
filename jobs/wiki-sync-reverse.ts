@@ -10,6 +10,8 @@ async function wikiSyncReverse() {
       },
     },
   })
+  console.log("🚀 ~ wikiSyncReverse ~ mediaList:", mediaList.length)
+  let count = 0
   for (const media of mediaList) {
     const { zh, ...rest } = media.titles
     await prisma.media.update({
@@ -19,7 +21,7 @@ async function wikiSyncReverse() {
         external_links: media.external_links.filter(v => v.url !== null && !v.url.includes("zh.wiki")),
       },
     })
-    console.log(`removed: ${zh}`)
+    console.log(`${++count} removed: ${zh}`)
   }
 }
 wikiSyncReverse()
