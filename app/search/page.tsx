@@ -2,7 +2,9 @@ import { search } from "@/actions/media"
 import AnimeRow from "@/components/AnimeRow"
 import CustomLink from "@/components/CustomLink"
 import Pagination from "@/components/Pagination"
+import { auth } from "@/lib/auth"
 import Link from "next/link"
+import prisma from "@/lib/prisma"
 
 export default async function Search({ searchParams }) {
   const p = {
@@ -10,7 +12,23 @@ export default async function Search({ searchParams }) {
     q: searchParams.q ? searchParams.q : "",
   }
   const { page, q } = p
+  const session = await auth()
   const [animes, count]: any = await search(q, page)
+  if (session) {
+    const follows = await prisma.followList.findMany({
+      where: {
+        media_id: { in: animes.map(anime => anime.id) },
+        user_id: session?.user?.id,
+      },
+    })
+    animes.forEach(anime => {
+      const found = follows.find(follow => follow.media_id === anime.id)
+      if (found) {
+        anime["watch_status"] = found.watch_status
+        anime["score"] = found.score
+      }
+    })
+  }
 
   return (
     <div className="p-1">
