@@ -50,6 +50,11 @@ export function Jobs({ stack, app }: StackContext) {
     bind: [bus],
   })
 
+  const wikiSyncFunction = new Function(stack, "wiki-sync", {
+    handler: "jobs/wiki-sync-job.wikiSyncJob",
+    timeout: 900,
+  })
+
   const anilistSyncCron = new Cron(stack, "anilistCron", {
     schedule: "cron(0 0 * * ? *)",
     job: anilistSyncFunction,
@@ -58,6 +63,11 @@ export function Jobs({ stack, app }: StackContext) {
   const jikanSyncCron = new Cron(stack, "jikanCron", {
     schedule: "cron(0 1 * * ? *)",
     job: jikanSyncFunction,
+  })
+
+  const wikiSyncCron = new Cron(stack, "wikiCron", {
+    schedule: "cron(0 2 * * ? *)",
+    job: wikiSyncFunction,
   })
 
   bus.addRules(stack, {
