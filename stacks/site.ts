@@ -21,6 +21,7 @@ export function Site({ stack }: StackContext) {
       GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
     },
+    warm: 1,
   })
 
   stack.addOutputs({
