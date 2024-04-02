@@ -20,8 +20,8 @@ export function newMediaToUpdateInput(newMedia, oldMedia, isReplace = false) {
       }
       return b
     },
-    pick(keys, oldMedia),
-    pick(keys, newMedia)
+    pick(keys, newMedia),
+    pick(keys, oldMedia)
   )
   const diffKeys = keys.filter(key => !equals(merged[key], oldMedia[key]))
   if (diffKeys.length < 1) return null
