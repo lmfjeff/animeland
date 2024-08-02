@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma"
 import { jikanObjToMediaDTO, newMediaToUpdateInput } from "./dto"
+import { equals, identity, isEmpty, pickBy } from "ramda"
 
 export async function jikanSyncJob(startAt?: number) {
   let page = startAt || 1
@@ -21,7 +22,8 @@ export async function jikanSyncJob(startAt?: number) {
       //   write data to db
       const rawMediaList = data.data
       for (const rawMedia of rawMediaList) {
-        const newMedia = jikanObjToMediaDTO(rawMedia)
+        // todo fix any
+        const newMedia = jikanObjToMediaDTO(rawMedia) as any
         const found = await prisma.media.findMany({
           where: {
             id_external: {
@@ -32,8 +34,22 @@ export async function jikanSyncJob(startAt?: number) {
         })
         if (found.length > 0) {
           const oldMedia = found?.[0]
-          const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
-          if (!updateInput) continue
+          // const updateInput = newMediaToUpdateInput(newMedia, oldMedia)
+          let updateInput = {}
+          if (!equals(oldMedia.day_of_week, newMedia.day_of_week)) {
+            updateInput["day_of_week"] = newMedia.day_of_week
+          }
+          if (!equals(oldMedia.time, newMedia.time)) {
+            updateInput["time"] = newMedia.time
+          }
+          if (!equals(oldMedia.score_external?.mal, newMedia.score_external?.mal)) {
+            updateInput["score_external"] = {
+              ...oldMedia.score_external,
+              mal: newMedia.score_external?.mal,
+            }
+          }
+          updateInput = pickBy(identity, updateInput)
+          if (!updateInput || isEmpty(updateInput)) continue
           await prisma.media.update({
             where: {
               id: oldMedia.id,
