@@ -26,7 +26,7 @@ export function AnimeDetail({ anime }) {
   return (
     <>
       <div className="flex flex-col p-2 gap-1 grow overflow-auto">
-        <div>{titles.zh}</div>
+        <div>{titles.en_jp}</div>
         <div>{titles.ja}</div>
         <div className="text-sm">
           {year} {SEASON_LIST[season - 1]} | {day_of_week?.jp} {time?.jp}

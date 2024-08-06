@@ -25,7 +25,7 @@ export default function AnimeCard({ anime, q }) {
           <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
         )}
         <div style={{ background: statusColor }}>
-          <div className="text-sm line-clamp-1">{anime.titles?.zh || anime.titles?.ja || "??"}</div>
+          <div className="text-sm line-clamp-1">{anime.titles?.en_jp || anime.titles?.ja || "??"}</div>
           <div className="text-xs line-clamp-1 whitespace-pre-wrap flex items-center justify-between">
             <div>
               {(!sort || sort === "day") && `${anime.time?.jp || "\n"}`}

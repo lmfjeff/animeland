@@ -93,7 +93,7 @@ export default async function Follow({ searchParams }) {
       <div className="flex flex-col divide-y">
         {follows.map(f => (
           <AnimeRow key={f.media_id} anime={f.media}>
-            <div className="line-clamp-1 grow">{f.media.titles?.zh || f.media.titles?.ja}</div>
+            <div className="line-clamp-1 grow">{f.media.titles?.en_jp || f.media.titles?.ja}</div>
             <div className="whitespace-nowrap">
               {f.media.year}-{f.media.season}
             </div>

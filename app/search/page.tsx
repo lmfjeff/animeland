@@ -36,7 +36,7 @@ export default async function Search({ searchParams }) {
       <div className="flex flex-col divide-y">
         {animes.map(anime => (
           <AnimeRow key={anime.id} anime={anime}>
-            <div className="line-clamp-1 grow py-1">{anime.titles?.zh || anime.titles?.ja || "??"}</div>
+            <div className="line-clamp-1 grow py-1">{anime.titles?.en_jp || anime.titles?.ja || "??"}</div>
             <div className="min-w-[60px] text-center">
               {anime.year}
               {anime.season ? `-${anime.season}` : ``}
