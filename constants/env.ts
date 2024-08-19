@@ -16,3 +16,5 @@ export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
 export const NEXT_PUBLIC_DOTENV = process.env.NEXT_PUBLIC_DOTENV!
 
 export const MAL_CLIENT_ID = process.env.MAL_CLIENT_ID!
+
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL!
