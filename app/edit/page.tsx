@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth"
 
 export default async function Edit({ searchParams }) {
   const session = await auth()
-  if (session && session.user.email == ADMIN_EMAIL) return <div>unauthorized</div>
+  if (!session || session.user.email !== ADMIN_EMAIL) return <div>unauthorized</div>
   let q = {
     ...searchParams,
     page: searchParams.page ? parseInt(searchParams.page) : 1,

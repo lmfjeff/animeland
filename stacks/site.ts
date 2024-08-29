@@ -1,4 +1,5 @@
 import {
+  ADMIN_EMAIL,
   DATABASE_URL,
   DIRECT_URL,
   GOOGLE_CLIENT_ID,
@@ -20,6 +21,7 @@ export function Site({ stack }: StackContext) {
       NEXTAUTH_SECRET: NEXTAUTH_SECRET,
       GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
+      ADMIN_EMAIL: ADMIN_EMAIL,
     },
     warm: 1,
   })

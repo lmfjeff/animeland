@@ -2,7 +2,6 @@
 import Link from "next/link"
 import { cn } from "@/utils/tw"
 import { useEffect, useState } from "react"
-import DebugButton from "./DebugButton"
 import { Modal, ModalContent } from "./Modal"
 import LoginForm from "./LoginForm"
 import SearchInput from "./SearchInput"
@@ -30,7 +29,6 @@ export default function Nav({ session }) {
       <div className="flex gap-4 items-center">
         <SearchInput />
         <ExtraPageButton />
-        <DebugButton />
         <CustomLink href="/follow">
           <img src="/heart.svg" className="size-8 min-w-8" />
         </CustomLink>
