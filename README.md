@@ -1,6 +1,6 @@
 ## Prerequisite (WIP)
 
-- node 18
+- node 20
 - aws configure credentials
 - create supabase project, get postgres connection info (direct & pooler connection)
 - create gcp project, get OAuth 2.0 Client IDs (for google login)
@@ -57,3 +57,10 @@ FollowList {
   score: float, // 0-10
 }
 ```
+
+## Possible Error
+
+- during `npm i`, some error message like "npm error gyp ERR! find VS msvs_version not set from command line or npm config"
+  - Use the Visual Studio Installer to get the Desktop development with C++ workload
+  - also "check the Windows 10 SDK in the installation details"
+  - reference: https://stackoverflow.com/a/59882818/18526428
