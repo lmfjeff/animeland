@@ -8,7 +8,7 @@ export default function SearchInput() {
   const [text, setText] = useState("")
   const inputRef = useRef<any>(null)
   function handleSearch() {
-    const url = `/search?q=${encodeURIComponent(text)}`
+    const url = `/search?q=${encodeURIComponent(text.trim())}`
     router.push(url)
     inputRef?.current?.blur()
     setText("")

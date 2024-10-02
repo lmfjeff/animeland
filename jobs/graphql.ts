@@ -7,7 +7,7 @@ export const anilistGetAnimeByPageQuery = `query ($page: Int, $perPage: Int) {
       lastPage
       hasNextPage
     }
-    media(type: ANIME) {
+    media {
       id
       idMal
       title {

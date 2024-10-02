@@ -116,7 +116,7 @@ export async function anilistSyncJob(startAt?: number) {
       }
       page++
 
-      if (globalPassed > 850) {
+      if (globalPassed > 850 && !!process.env.LAMBDA_TASK_ROOT) {
         console.log(`almost timeout, continue in next job: page ${page}, total time: ${globalPassed}`)
         return page
       }

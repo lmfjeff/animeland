@@ -1,6 +1,6 @@
 ## Prerequisite (WIP)
 
-- node 20
+- node 18
 - aws configure credentials
 - create supabase project, get postgres connection info (direct & pooler connection)
 - create gcp project, get OAuth 2.0 Client IDs (for google login)

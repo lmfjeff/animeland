@@ -20,7 +20,7 @@ export function Jobs({ stack, app }: StackContext) {
       description: "Prisma engine and library",
       layerVersionName: app.logicalPrefixedName("prisma"),
       code: lambda.Code.fromAsset(path.resolve(layerPath)),
-    })
+    })  as any // todo fix any
     stack.addDefaultFunctionLayers([prismaLayer])
   }
   stack.setDefaultFunctionProps({
@@ -56,17 +56,17 @@ export function Jobs({ stack, app }: StackContext) {
   })
 
   const anilistSyncCron = new Cron(stack, "anilistCron", {
-    schedule: "cron(0 0 * * ? *)",
+    schedule: "cron(0 16 * * ? *)",
     job: anilistSyncFunction,
   })
 
   const jikanSyncCron = new Cron(stack, "jikanCron", {
-    schedule: "cron(0 1 * * ? *)",
+    schedule: "cron(0 22 * * ? *)",
     job: jikanSyncFunction,
   })
 
   const wikiSyncCron = new Cron(stack, "wikiCron", {
-    schedule: "cron(0 2 * * ? *)",
+    schedule: "cron(0 23 * * ? *)",
     job: wikiSyncFunction,
   })
 

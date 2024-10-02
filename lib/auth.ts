@@ -35,7 +35,7 @@ export const nextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as any, // todo fix any
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "google") {
