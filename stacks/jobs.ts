@@ -20,7 +20,7 @@ export function Jobs({ stack, app }: StackContext) {
       description: "Prisma engine and library",
       layerVersionName: app.logicalPrefixedName("prisma"),
       code: lambda.Code.fromAsset(path.resolve(layerPath)),
-    })  as any // todo fix any
+    }) as any // todo fix any
     stack.addDefaultFunctionLayers([prismaLayer])
   }
   stack.setDefaultFunctionProps({
