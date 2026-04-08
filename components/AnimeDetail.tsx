@@ -1,8 +1,14 @@
+"use client"
+
+import { useSearchParams } from "next/navigation"
 import { SEASON_LIST } from "@/constants/media"
 import ExternalLink from "./ExternalLink"
 import { FollowButton, RateButton, StatusButton } from "./FollowButton"
+import { normalizeLanguage, resolveTitleByLanguage } from "@/utils/title"
 
 export function AnimeDetail({ anime }) {
+  const searchParams = useSearchParams()
+  const lang = normalizeLanguage(searchParams.get("lang"))
   const {
     titles,
     synonyms,
@@ -20,14 +26,15 @@ export function AnimeDetail({ anime }) {
     start_date,
     end_date,
   } = anime
+  const title = resolveTitleByLanguage(titles, lang)
   const isFollowed = !!anime["watch_status"]
   const ytTrailers = trailers.filter(t => t.site === "youtube")
   const wikiLinks = external_links.filter(link => link.site === "Wikipedia")
   return (
     <>
       <div className="flex flex-col p-2 gap-1 grow overflow-auto">
-        <div>{titles.en_jp}</div>
-        <div>{titles.ja}</div>
+        <div className="text-lg font-semibold">{title}</div>
+        <div className="text-sm text-slate-600">{titles.en || titles.en_jp || titles.zh || titles.ja}</div>
         <div className="text-sm">
           {year} {SEASON_LIST[season - 1]} | {day_of_week?.jp} {time?.jp}
         </div>

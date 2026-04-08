@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client"
 import Pagination from "@/components/Pagination"
 import AnimeRow from "@/components/AnimeRow"
 import { RateButton, StatusButton } from "@/components/FollowButton"
+import { resolveTitleByLanguage } from "@/utils/title"
 
 export default async function Follow({ searchParams }) {
   const perPage = 100
@@ -91,20 +92,23 @@ export default async function Follow({ searchParams }) {
         <Filter q={q} name="watch_status" options={FOLLOWLIST_WATCH_STATUS_OPTIONS} />
       </div>
       <div className="flex flex-col divide-y">
-        {follows.map(f => (
-          <AnimeRow key={f.media_id} anime={f.media}>
-            <div className="line-clamp-1 grow">{f.media.titles?.en_jp || f.media.titles?.ja}</div>
-            <div className="whitespace-nowrap">
-              {f.media.year}-{f.media.season}
-            </div>
-            <div className="min-w-[70px] max-w-[70px] overflow-clip">
-              <StatusButton animeId={f.media_id} watchStatus={f.watch_status} />
-            </div>
-            <div className="min-w-[30px]">
-              <RateButton animeId={f.media_id} score={f.score} />
-            </div>
-          </AnimeRow>
-        ))}
+        {follows.map(f => {
+          const title = resolveTitleByLanguage(f.media.titles, searchParams.lang)
+          return (
+            <AnimeRow key={f.media_id} anime={f.media}>
+              <div className="line-clamp-1 grow">{title}</div>
+              <div className="whitespace-nowrap">
+                {f.media.year}-{f.media.season}
+              </div>
+              <div className="min-w-[70px] max-w-[70px] overflow-clip">
+                <StatusButton animeId={f.media_id} watchStatus={f.watch_status} />
+              </div>
+              <div className="min-w-[30px]">
+                <RateButton animeId={f.media_id} score={f.score} />
+              </div>
+            </AnimeRow>
+          )
+        })}
       </div>
     </div>
   )

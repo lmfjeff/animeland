@@ -1,14 +1,18 @@
 "use client"
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { cn } from "@/utils/tw"
 import { Modal, ModalContent } from "./Modal"
 import { AnimeDetail } from "./AnimeDetail"
 import { WATCH_STATUS_COLOR } from "@/constants/media"
+import { resolveTitleByLanguage } from "@/utils/title"
 
 export default function AnimeCard({ anime, q }) {
   const [detailModalOpen, setDetailModalOpen] = useState(false)
+  const searchParams = useSearchParams()
   const { sort } = q
   const isFollowed = !!anime.watch_status
+  const title = resolveTitleByLanguage(anime.titles, searchParams.get("lang"))
   const statusColor = isFollowed ? WATCH_STATUS_COLOR[anime.watch_status] : ""
 
   return (
@@ -25,7 +29,7 @@ export default function AnimeCard({ anime, q }) {
           <img src={anime?.images?.[0]?.lg} className="w-full aspect-square object-cover" />
         )}
         <div style={{ background: statusColor }}>
-          <div className="text-sm line-clamp-1">{anime.titles?.en_jp || anime.titles?.ja || "??"}</div>
+          <div className="text-sm line-clamp-1">{title}</div>
           <div className="text-xs line-clamp-1 whitespace-pre-wrap flex items-center justify-between">
             <div>
               {(!sort || sort === "day") && `${anime.time?.jp || "\n"}`}

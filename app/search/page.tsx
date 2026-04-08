@@ -5,6 +5,7 @@ import Pagination from "@/components/Pagination"
 import { auth } from "@/lib/auth"
 import Link from "next/link"
 import prisma from "@/lib/prisma"
+import { resolveTitleByLanguage } from "@/utils/title"
 
 export default async function Search({ searchParams }) {
   const p = {
@@ -34,16 +35,19 @@ export default async function Search({ searchParams }) {
     <div className="p-1">
       <Pagination q={p} count={count} perPage={20} />
       <div className="flex flex-col divide-y">
-        {animes.map(anime => (
-          <AnimeRow key={anime.id} anime={anime}>
-            <div className="line-clamp-1 grow py-1">{anime.titles?.en_jp || anime.titles?.ja || "??"}</div>
-            <div className="min-w-[60px] text-center">
-              {anime.year}
-              {anime.season ? `-${anime.season}` : ``}
-            </div>
-            <div className="min-w-[90px] text-center">{anime.format}</div>
-          </AnimeRow>
-        ))}
+        {animes.map(anime => {
+          const title = resolveTitleByLanguage(anime.titles, searchParams.lang)
+          return (
+            <AnimeRow key={anime.id} anime={anime}>
+              <div className="line-clamp-1 grow py-1">{title}</div>
+              <div className="min-w-[60px] text-center">
+                {anime.year}
+                {anime.season ? `-${anime.season}` : ``}
+              </div>
+              <div className="min-w-[90px] text-center">{anime.format}</div>
+            </AnimeRow>
+          )
+        })}
       </div>
     </div>
   )

@@ -59,7 +59,7 @@ export function usePopover({
   const context = data.context
 
   const click = useClick(context, {
-    enabled: controlledOpen == null,
+    enabled: controlledOpen == null || setControlledOpen != null,
   })
   const dismiss = useDismiss(context)
   const role = useRole(context)
