@@ -161,3 +161,12 @@ model FollowList {
   @@id([media_id, user_id])
   @@map("followlist")
 }
+
+model SyncCheckpoint {
+  job_name   String   @id @map("job_name")
+  last_page  Int      @default(1) @map("last_page")
+  status     String   @default("idle")
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  @@map("sync_checkpoints")
+}
