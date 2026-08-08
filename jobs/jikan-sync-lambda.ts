@@ -12,7 +12,7 @@ export async function handler(event) {
       .putEvents({
         Entries: [
           {
-            EventBusName: EventBus.jobEventBus.eventBusName,
+            EventBusName: (EventBus as any)?.jobEventBus?.eventBusName || "jobEventBus",
             Source: "jikan-sync-lambda",
             DetailType: "self-trigger",
             Detail: JSON.stringify({
