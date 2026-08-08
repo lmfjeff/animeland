@@ -25,6 +25,7 @@ export function AnimeDetail({ anime }) {
     time,
     start_date,
     end_date,
+    updated_at,
   } = anime
   const title = resolveTitleByLanguage(titles, lang)
   const isFollowed = !!anime["watch_status"]
@@ -32,7 +33,7 @@ export function AnimeDetail({ anime }) {
   const wikiLinks = external_links.filter(link => link.site === "Wikipedia")
   return (
     <>
-      <div className="flex flex-col p-2 gap-1 grow overflow-auto">
+      <div className="flex flex-col p-2 gap-1 grow overflow-auto relative">
         <div className="text-lg font-semibold">{title}</div>
         <div className="text-sm text-slate-600">{titles.en || titles.en_jp || titles.zh || titles.ja}</div>
         <div className="text-sm">
@@ -89,11 +90,18 @@ export function AnimeDetail({ anime }) {
             ))}
           </div>
         )}
+        {updated_at && (
+          <div className="text-right text-xs text-slate-400 px-2 pb-2">
+            Updated: {new Date(updated_at).toLocaleString()}
+          </div>
+        )}
       </div>
-      <div className="bg-blue-200 sticky bottom-0 grid grid-cols-3 border-t border-black">
-        <FollowButton animeId={id} isFollowed={isFollowed} />
-        <RateButton animeId={id} score={anime["score"]} />
-        <StatusButton animeId={id} watchStatus={anime["watch_status"]} />
+      <div className="bg-blue-200 sticky bottom-0 border-t border-black">
+        <div className="grid grid-cols-3">
+          <FollowButton animeId={id} isFollowed={isFollowed} />
+          <RateButton animeId={id} score={anime["score"]} />
+          <StatusButton animeId={id} watchStatus={anime["watch_status"]} />
+        </div>
       </div>
     </>
   )
