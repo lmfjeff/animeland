@@ -10,11 +10,13 @@
 - create .env
 - `npm run dev`
 
-## deployment (WIP)
+## deployment
 
-- create .env.prod
-- (temp, TODO move to cicd) run db migration to prod db by `npm run migrate:prod`
-- deploy to aws by `npm run deploy`
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for the full guide including:
+- AWS + WSL setup
+- Environment variables
+- Running DB migrations
+- Known issues and workarounds
 
 ## data structure
 
