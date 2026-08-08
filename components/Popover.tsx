@@ -29,7 +29,7 @@ interface PopoverOptions {
 export function usePopover({
   initialOpen = false,
   placement = "bottom",
-  modal,
+  modal = false,
   open: controlledOpen,
   onOpenChange: setControlledOpen,
 }: PopoverOptions = {}) {
@@ -61,7 +61,11 @@ export function usePopover({
   const click = useClick(context, {
     enabled: controlledOpen == null || setControlledOpen != null,
   })
-  const dismiss = useDismiss(context)
+  const dismiss = useDismiss(context, {
+    outsidePress: true,
+    outsidePressEvent: "pointerdown",
+    bubbles: true,
+  })
   const role = useRole(context)
 
   const interactions = useInteractions([click, dismiss, role])
@@ -108,8 +112,6 @@ export function Popover({
 }: {
   children: React.ReactNode
 } & PopoverOptions) {
-  // This can accept any props as options, e.g. `placement`,
-  // or other positioning options.
   const popover = usePopover({ modal, ...restOptions })
   return <PopoverContext.Provider value={popover}>{children}</PopoverContext.Provider>
 }
@@ -122,7 +124,7 @@ interface PopoverTriggerProps {
 export const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement> & PopoverTriggerProps>(
   function PopoverTrigger({ children, asChild = false, ...props }, propRef) {
     const context = usePopoverContext()
-    const childrenRef = (children as any).ref
+    const childrenRef = (children as any)?.ref
     const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef])
 
     // `asChild` allows the user to pass any element as the anchor
@@ -140,9 +142,8 @@ export const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTML
 
     return (
       <button
-        ref={ref}
+        ref={ref as any}
         type="button"
-        // The user can style the trigger based on the state
         data-state={context.open ? "open" : "closed"}
         {...context.getReferenceProps(props)}
       >
@@ -163,18 +164,19 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<H
 
   return (
     <FloatingPortal>
-      <FloatingFocusManager context={floatingContext} modal={context.modal}>
-        <div
-          ref={ref}
-          style={{ ...context.floatingStyles, ...style }}
-          aria-labelledby={context.labelId}
-          aria-describedby={context.descriptionId}
-          {...context.getFloatingProps(props)}
-          className={cn(className, "z-popover")}
-        >
-          {props.children}
-        </div>
-      </FloatingFocusManager>
+      <div
+        ref={ref}
+        style={{ ...context.floatingStyles, zIndex: 99999, ...style }}
+        aria-labelledby={context.labelId}
+        aria-describedby={context.descriptionId}
+        onPointerDown={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
+        {...context.getFloatingProps(props)}
+        className={cn(className, "z-popover")}
+      >
+        {props.children}
+      </div>
     </FloatingPortal>
   )
 })

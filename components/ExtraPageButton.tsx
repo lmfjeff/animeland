@@ -13,8 +13,10 @@ export default function ExtraPageButton() {
   const router = usePRouter()
   return (
     <Popover open={open} onOpenChange={setOpen} placement="bottom">
-      <PopoverTrigger onClick={() => setOpen(v => !v)} className="text-center">
-        <img src="/menu.svg" className="size-8 min-w-8" />
+      <PopoverTrigger asChild>
+        <button type="button" className="text-center focus:outline-none flex items-center">
+          <img src="/menu.svg" className="size-8 min-w-8 cursor-pointer" alt="Menu" />
+        </button>
       </PopoverTrigger>
       <PopoverContent
         className={cn(
