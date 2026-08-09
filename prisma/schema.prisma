@@ -122,6 +122,9 @@ model Media {
   relations        Relation[]   @relation("relation_targets")
   relation_sources Relation[]   @relation("relation_sources")
 
+  @@index([year, season])
+  @@index([status, year, season])
+  @@index([format])
   @@map("media")
 }
 
