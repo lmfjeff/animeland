@@ -57,7 +57,7 @@ async function processJikanPage(rawMediaList: any[]) {
   return updatedCount
 }
 
-export async function jikanSyncJob(_startAt?: number) {
+export async function jikanSyncJob(_startAt?: number): Promise<number | undefined> {
   const globalStart = Date.now()
   console.log(`[Jikan Sync] Starting seasonal sync (now & upcoming)...`)
 
@@ -128,5 +128,6 @@ export async function jikanSyncJob(_startAt?: number) {
       update: { status: "error" },
     })
   }
+  return undefined
 }
 

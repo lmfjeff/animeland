@@ -116,7 +116,7 @@ async function processAndSaveMedia(rawMediaList: any[]) {
   return { createdCount, updatedCount }
 }
 
-export async function anilistSyncJob(startAt?: number) {
+export async function anilistSyncJob(startAt?: number): Promise<number | undefined> {
   const globalStart = Date.now()
   console.log(`[AniList Sync] Starting seasonal and status sync job...`)
 
@@ -232,5 +232,6 @@ export async function anilistSyncJob(startAt?: number) {
       update: { status: "error" },
     })
   }
+  return undefined
 }
 

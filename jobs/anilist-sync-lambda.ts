@@ -7,7 +7,7 @@ const client = new AWS.EventBridge()
 export async function handler(event) {
   const startAt = event?.detail?.start_at
   const page = await anilistSyncJob(startAt)
-  if (page) {
+  if (typeof page === "number") {
     const resp = await client
       .putEvents({
         Entries: [

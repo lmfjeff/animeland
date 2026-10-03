@@ -11,7 +11,7 @@ if [ -z "$REPO_SRC" ]; then
   exit 1
 fi
 
-export PATH="$HOME/.local/share/fnm:$PATH"
+export PATH="$HOME/.nvm/versions/node/v20.20.2/bin:$HOME/.local/share/fnm:$PATH"
 eval "$(fnm env --shell bash 2>/dev/null || true)"
 fnm use 20 2>/dev/null || true
 
@@ -21,6 +21,7 @@ rsync -a --delete \
   --exclude='node_modules' \
   --exclude='.next' \
   --exclude='.sst' \
+  --exclude='.env*' \
   "$REPO_SRC/" \
   ~/animeland/
 
@@ -29,5 +30,9 @@ cd ~/animeland
 npm install 2>&1 | tail -5
 
 echo "=== Node: $(node -v) | npm: $(npm -v) ==="
+if [ -f .env.prod ]; then
+  echo "=== Copying .env.prod to .env for production deploy ==="
+  cp -f .env.prod .env
+fi
 echo "=== Deploying with SST ==="
 npx sst deploy --stage prod
