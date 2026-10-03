@@ -59,7 +59,21 @@ export function anilistObjToMediaDTO(rawmedia) {
   const toBeSlug = countryOfOrigin === "JP" ? title.romaji ?? title.english : title.english
   const jaTitle = countryOfOrigin === "JP" ? { en_jp: title.romaji, ja: title.native } : {}
   const seasonIndex = SEASON_LIST.indexOf(season?.toLowerCase())
-  const seasonNum = seasonIndex > 0 ? seasonIndex + 1 : undefined
+  const seasonNum = seasonIndex >= 0 ? seasonIndex + 1 : undefined
+
+  const airingAt = rawmedia.nextAiringEpisode?.airingAt || rawmedia.airingSchedule?.nodes?.[0]?.airingAt
+  let dayOfWeek: { jp: string } | undefined
+  let broadcastTime: { jp: string } | undefined
+
+  if (airingAt && !isAdult && format !== "OVA") {
+    const d = new Date(airingAt * 1000)
+    dayOfWeek = {
+      jp: d.toLocaleDateString("en-US", { timeZone: "Asia/Tokyo", weekday: "long" }).toLowerCase(),
+    }
+    broadcastTime = {
+      jp: d.toLocaleTimeString("en-US", { timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit", hour12: false }),
+    }
+  }
 
   const input: createMediaInputType | updateMediaInputType = {
     titles: { en: title.english, ...jaTitle },
@@ -83,6 +97,8 @@ export function anilistObjToMediaDTO(rawmedia) {
     external_links: externalLinks.map(v => ({ url: v.url, site: v.site })),
     trailers: trailer ? [{ id: trailer.id, site: trailer.site }] : undefined,
     slug: toBeSlug ? slugify(toBeSlug, { lower: true }) : undefined,
+    day_of_week: dayOfWeek,
+    time: broadcastTime,
     // todo disconnect genres if no longer exist?
     genres: {
       connectOrCreate: genres.map(g => ({

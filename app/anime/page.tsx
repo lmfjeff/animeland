@@ -28,6 +28,8 @@ export default async function Animes({ params, searchParams }) {
         season: season,
         year: year,
         format: format.toUpperCase(),
+        nsfw: false,
+        is_hiden: false,
       }
     } else {
       mediaWhere = {
@@ -51,6 +53,8 @@ export default async function Animes({ params, searchParams }) {
         time: {
           not: Prisma.DbNull,
         },
+        nsfw: false,
+        is_hiden: false,
       }
     }
     let animes = await prisma.media.findMany({
